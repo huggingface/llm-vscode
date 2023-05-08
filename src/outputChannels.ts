@@ -15,7 +15,7 @@ export function logInput(txt: string, parameters = {}){
     outputChannel.append(txt);
     outputChannel.append("\n")
     if(logPath){
-        fs.appendFileSync(logPath, JSON.stringify({type:"input", text: txt, parameters}) + "\n")
+        fs.appendFileSync(logPath, JSON.stringify({time: Date.now(), type:"input", text: txt, parameters}) + "\n")
     }
 }
 
@@ -27,7 +27,7 @@ export function logOutput(txt: string){
     outputChannel.append("\n\n");
 
     if(logPath){
-        fs.appendFileSync(logPath, JSON.stringify({type:"output", text: txt}) + "\n")
+        fs.appendFileSync(logPath, JSON.stringify({time: Date.now(), type:"output", text: txt}) + "\n")
     }
 }
 
