@@ -1,10 +1,20 @@
 # Project for testing open source code completion models
 
-It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open sorurce code models on hf.co/models
+It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models)
 
 ## Installing
 
 Install just like any other [vscode extension](https://marketplace.visualstudio.com/items?itemName=HuggingFace.huggingface-vscode).
+
+By default, this extension is using [bigcode/starcoder](https://huggingface.co/bigcode/starcoder) & [Hugging Face Inference API](https://huggingface.co/inference-api) for the inference. However, you can [configure](#configuring) to make inference requests to your custom endpoint that is not Hugging Face Inference API. Thus, if you are using the default Hugging Face Inference AP inference, you'd need to provide [HF API Token](#hf-api-token).
+
+#### HF API token
+
+You can supply your HF API token ([hf.co/settings/token](https://hf.co/settings/token)) with this command:
+1. `Cmd/Ctrl+Shift+P` to open VSCode command palette
+2. Type: `Hugging Face Code: Set API token`
+
+<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-api-token.png" width="800px">
 
 ## Testing
 
@@ -12,6 +22,15 @@ Install just like any other [vscode extension](https://marketplace.visualstudio.
 2. Try typing `def main():`
 
 <img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/ext-working.png" width="800px">
+
+#### Checking if the generated code in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack)
+
+Hit `Ctrl+Esc` to check if the generated code is in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
+This is a rapid first-pass attribution check using [stack.dataportraits.org](https://stack.dataportraits.org).
+We check for sequences of at least 50 characters that match a Bloom filter.
+This means false positives are possible and long enough surrounding context is necesssary (see the [paper](https://dataportraits.org/) for details on n-gram striding and sequence length).
+[The dedicated Stack search tool](https://hf.co/spaces/bigcode/search) is a full dataset index and can be used for a complete second pass. 
+
 
 ## Developing
 Make sure you've [installed yarn](https://yarnpkg.com/getting-started/install) on your system.
@@ -33,12 +52,6 @@ You can see input to & output from the code generation API:
 You can configure: endpoint to where request will be sent and special tokens.
 
 <img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-configs.png" width="800px">
-
-#### HF API token
-
-You can supply your HF API token (hf.co/settings/token) with this command:
-
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-api-token.png" width="800px">
 
 Example:
 
