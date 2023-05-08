@@ -221,6 +221,11 @@
             "default": 0.2,
             "description": "Sampling temperature"
           },
+          "HuggingFaceCode.maxNewTokens": {
+            "type": "number",
+            "default": 60,
+            "description": "Max new tokens"
+          },
           "HuggingFaceCode.stopToken": {
             "type": "string",
             "default": "<|endoftext|>",

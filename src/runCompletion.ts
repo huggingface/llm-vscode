@@ -35,9 +35,10 @@ export default async function runCompletion(
     endToken: string;
     stopToken: string;
     temperature: number;
+    maxNewTokens: number;
   };
   const config: Config = workspace.getConfiguration("HuggingFaceCode") as Config;
-  const { modelIdOrEndpoint, startToken, middleToken, endToken, stopToken, temperature } = config;
+  const { modelIdOrEndpoint, startToken, middleToken, endToken, stopToken, temperature, maxNewTokens } = config;
 
   const context = getTabnineExtensionContext();
   const apiToken = await context?.secrets.get("apiToken");
@@ -68,7 +69,7 @@ export default async function runCompletion(
   const data = {
     inputs,
     parameters: {
-      max_new_tokens: 60,
+      max_new_tokens: maxNewTokens,
       temperature,
       do_sample: temperature > 0,
       top_p: 0.95,
