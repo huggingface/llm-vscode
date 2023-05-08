@@ -205,6 +205,11 @@
       {
         "title": "Hugging Face Code",
         "properties": {
+          "HuggingFaceCode.logPath": {
+            "type": "string",
+            "default": "",
+            "description": "Path to log file. If empty, logs will not be captured."
+          },
           "HuggingFaceCode.modelIdOrEndpoint": {
             "type": "string",
             "default": "bigcode/starcoder",
