@@ -67,11 +67,13 @@ def hello_word():
 Then, the request body will look like:
 ```js
 const inputs = `{start token}import numpy as np\nimport scipy as sp\n{middle token}def hello_word():\n    print("Hello world"){end token}`
-const data = {inputs, parameters:{max_new_tokens:256}};
+const data = {inputs, parameters:{max_new_tokens:256}};  // {"inputs": "", "parameters": {"max_new_tokens": 256}}
 
 const res = await fetch(endpoint, {
     body: JSON.stringify(data),
     headers,
     method: "POST"
 });
+
+const json = await res.json() as any as {generated_text: string};  // {"generated_text": ""}
 ```
