@@ -1,6 +1,12 @@
-# Project for testing open source code completion models
+# 🤗 VSCode extension for testing open source code completion models
 
-It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models)
+It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models). 
+
+We also have exntesions for:
+* [neovim](https://github.com/huggingface/hfcc.nvim)
+* [jupyter](https://github.com/bigcode-project/jupytercoder)
+
+Currently supported model is [StartCoder](https://huggingface.co/blog/starcoder) from [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
 
 ## Installing
 
@@ -66,7 +72,7 @@ def hello_word():
 
 Then, the request body will look like:
 ```js
-const inputs = `{start token}import numpy as np\nimport scipy as sp\n{middle token}def hello_word():\n    print("Hello world"){end token}`
+const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_word():\n    print("Hello world"){middle token}`
 const data = {inputs, parameters:{max_new_tokens:256}};  // {"inputs": "", "parameters": {"max_new_tokens": 256}}
 
 const res = await fetch(endpoint, {
