@@ -83,3 +83,9 @@ const res = await fetch(endpoint, {
 
 const json = await res.json() as any as {generated_text: string};  // {"generated_text": ""}
 ```
+
+## Community
+
+| Repository | Description |
+| --- | --- |
+| [huggingface-vscode-endpoint-server](https://github.com/LucienShui/huggingface-vscode-endpoint-server) | Custom code generation endpoint for this repository |
