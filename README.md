@@ -2,7 +2,7 @@
 
 It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models). 
 
-We also have exntesions for:
+We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
 
@@ -66,13 +66,13 @@ Let's say your current code is this:
 import numpy as np
 import scipy as sp
 {YOUR_CURSOR_POSITION}
-def hello_word():
+def hello_world():
     print("Hello world")
 ```
 
 Then, the request body will look like:
 ```js
-const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_word():\n    print("Hello world"){middle token}`
+const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_world():\n    print("Hello world"){middle token}`
 const data = {inputs, parameters:{max_new_tokens:256}};  // {"inputs": "", "parameters": {"max_new_tokens": 256}}
 
 const res = await fetch(endpoint, {
