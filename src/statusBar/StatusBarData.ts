@@ -39,7 +39,7 @@ export default class StatusBarData {
     this._statusBarItem.tooltip =
       isCapabilityEnabled(Capability.SHOW_AGRESSIVE_STATUS_BAR_UNTIL_CLICKED) &&
       !this._context.globalState.get(STATUS_BAR_FIRST_TIME_CLICKED)
-        ? "Click 'tabnine' for settings and more information"
+        ? "Click 'huggingface-vscode' for settings and more information"
         : `${FULL_BRAND_REPRESENTATION} (Click to open settings)`;
   }
 }
