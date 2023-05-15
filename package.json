@@ -251,7 +251,7 @@
         "when": "tabnine.tab-override && inlineSuggestionVisible && !editorTabMovesFocus"
       },
       {
-        "key": "ctrl+escape",
+        "key": "cmd+shift+a",
         "command": "tabnine.attribution"
       },
       {
