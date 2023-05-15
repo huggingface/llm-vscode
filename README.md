@@ -1,6 +1,12 @@
-# Project for testing open source code completion models
+# 🤗 VSCode extension for testing open source code completion models
 
-It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models)
+It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models). 
+
+We also have extensions for:
+* [neovim](https://github.com/huggingface/hfcc.nvim)
+* [jupyter](https://github.com/bigcode-project/jupytercoder)
+
+Currently supported model is [StartCoder](https://huggingface.co/blog/starcoder) from [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
 
 ## Installing
 
@@ -23,7 +29,7 @@ You can supply your HF API token ([hf.co/settings/token](https://hf.co/settings/
 
 <img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/ext-working.png" width="800px">
 
-#### Checking if the generated code in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack)
+#### Checking if the generated code is in [The Stack](https://huggingface.co/datasets/bigcode/the-stack)
 
 Hit `Ctrl+Esc` to check if the generated code is in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
 This is a rapid first-pass attribution check using [stack.dataportraits.org](https://stack.dataportraits.org).
@@ -60,18 +66,26 @@ Let's say your current code is this:
 import numpy as np
 import scipy as sp
 {YOUR_CURSOR_POSITION}
-def hello_word():
+def hello_world():
     print("Hello world")
 ```
 
 Then, the request body will look like:
 ```js
-const inputs = `{start token}import numpy as np\nimport scipy as sp\n{middle token}def hello_word():\n    print("Hello world"){end token}`
-const data = {inputs, parameters:{max_new_tokens:256}};
+const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_world():\n    print("Hello world"){middle token}`
+const data = {inputs, parameters:{max_new_tokens:256}};  // {"inputs": "", "parameters": {"max_new_tokens": 256}}
 
 const res = await fetch(endpoint, {
     body: JSON.stringify(data),
     headers,
     method: "POST"
 });
+
+const json = await res.json() as any as {generated_text: string};  // {"generated_text": ""}
 ```
+
+## Community
+
+| Repository | Description |
+| --- | --- |
+| [huggingface-vscode-endpoint-server](https://github.com/LucienShui/huggingface-vscode-endpoint-server) | Custom code generation endpoint for this repository |
