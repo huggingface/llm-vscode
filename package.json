@@ -196,6 +196,11 @@
             "default": "bigcode/starcoder",
             "description": "Supply huggingface model id (ex: `bigcode/starcoder`) or custom endpoint (ex: https://bigcode-large-xl.eu.ngrok.io/generate) to which request will be sent to. When huggingface model id is supplied, hugging face API inference will be used."
           },
+          "HuggingFaceCode.attributionEndpoint": {
+            "type": "string",
+            "default": "https://stack.dataportraits.org/overlap",
+            "description": "Endpoint to which attribution request will be sent to (https://stack.dataportraits.org/overlap for the stack)."
+          },
           "HuggingFaceCode.isFillMode": {
             "type": "boolean",
             "default": true,

@@ -16,9 +16,10 @@ export default async function highlightStackAttributions(): Promise<void> {
 
   type Config = WorkspaceConfiguration & {
     attributionWindowSize: number;
+    attributionEndpoint: string;
   };
   const config: Config = workspace.getConfiguration("HuggingFaceCode") as Config;
-  const { attributionWindowSize } = config;
+  const { attributionWindowSize, attributionEndpoint } = config;
 
   // get cursor postion and offset
   const cursorPosition = window.activeTextEditor?.selection.active;
@@ -37,13 +38,12 @@ export default async function highlightStackAttributions(): Promise<void> {
   const text = document.getText();
   const textAroundCursor = text.slice(start, end);
 
-  const url = "https://stack.dataportraits.org/overlap";
   const body = { document: textAroundCursor };
 
   // notify user request has started
   void window.showInformationMessage("Searching for nearby code in the stack...");
     
-  const resp = await fetch(url, {
+  const resp = await fetch(attributionEndpoint, {
     method: "POST",
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
