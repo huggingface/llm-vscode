@@ -6,7 +6,7 @@ We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
 
-Currently supported model is [StartCoder](https://huggingface.co/blog/starcoder) from [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
+Currently supported model is [StarCoder](https://huggingface.co/blog/starcoder) from [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
 
 ## Installing
 
