@@ -37,7 +37,7 @@ export default async function runCompletion(
     temperature: number;
   };
   const config: Config = workspace.getConfiguration("HuggingFaceCode") as Config;
-  const { modelIdOrEndpoint, startToken, middleToken, endToken, stopToken, temperature } = config;
+  const { modelIdOrEndpoint, startToken, middleToken, endToken, stopToken, temperature, isFillMode } = config;
 
   const context = getTabnineExtensionContext();
   const apiToken = await context?.secrets.get("apiToken");
@@ -63,7 +63,7 @@ export default async function runCompletion(
   }
 
   // use FIM (fill-in-middle) mode if suffix is available
-  const inputs = suffix.trim() ? `${startToken}${prefix}${endToken}${suffix}${middleToken}` : prefix;
+  const inputs = isFillMode ? `${startToken}${prefix}${endToken}${suffix}${middleToken}` : prefix;
 
   const data = {
     inputs,
