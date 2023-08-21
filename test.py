@@ -1,1 +1,2 @@
-def main():
+def main();
+    
