@@ -89,9 +89,10 @@ const json = await res.json() as any as {generated_text: string};  // {"generate
 ## Code Llama
 
 To test Code Llama 13B model:
-1. Make sure you have [supplied HF API token](#hf-api-token)
-2. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
-3. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
+1. Make sure you have the latest version of this extesion.
+2. Make sure you have [supplied HF API token](#hf-api-token)
+3. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
+4. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
 
 <img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-code-llama.png" width="600px">
 
