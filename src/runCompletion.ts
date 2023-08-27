@@ -1,6 +1,8 @@
 import { Position, Range, TextDocument, WorkspaceConfiguration, workspace, window, env, Uri } from "vscode";
 import {URL} from "url";
 import fetch from "node-fetch";
+import type { Config as HFCodeConfig } from "./configTemplates"
+import { PREFIX, SUFFIX } from "./configTemplates"
 import { AutocompleteResult, ResultEntry } from "./binary/requests/requests";
 import { CHAR_LIMIT, FULL_BRAND_REPRESENTATION } from "./globals/consts";
 import languages from "./globals/languages";
@@ -27,17 +29,8 @@ export default async function runCompletion(
   const prefix =  document.getText(new Range(beforeStart, position)) + currentSuggestionText;
   const suffix = document.getText(new Range(position, afterEnd));
 
-  type Config = WorkspaceConfiguration & {
-    modelIdOrEndpoint: string;
-    isFillMode: boolean;
-    startToken: string;
-    middleToken: string;
-    endToken: string;
-    stopToken: string;
-    temperature: number;
-  };
-  const config: Config = workspace.getConfiguration("HuggingFaceCode") as Config;
-  const { modelIdOrEndpoint, startToken, middleToken, endToken, stopToken, temperature } = config;
+  const config: HFCodeConfig = workspace.getConfiguration("HuggingFaceCode") as WorkspaceConfiguration & HFCodeConfig;
+  const { modelIdOrEndpoint, isFillMode, autoregressiveModeTemplate, fillModeTemplate, stopTokens, tokensToClear, temperature } = config;
 
   const context = getTabnineExtensionContext();
   const apiToken = await context?.secrets.get("apiToken");
@@ -63,7 +56,7 @@ export default async function runCompletion(
   }
 
   // use FIM (fill-in-middle) mode if suffix is available
-  const inputs = suffix.trim() ? `${startToken}${prefix}${endToken}${suffix}${middleToken}` : prefix;
+  const inputs = (isFillMode && suffix.trim()) ? fillModeTemplate.replace(PREFIX, prefix).replace(SUFFIX, suffix) : autoregressiveModeTemplate.replace(PREFIX, prefix).replace(SUFFIX, suffix);
 
   const data = {
     inputs,
@@ -72,7 +65,7 @@ export default async function runCompletion(
       temperature,
       do_sample: temperature > 0,
       top_p: 0.95,
-      stop: [stopToken]
+      stop: stopTokens
     }
   };
 
@@ -104,7 +97,8 @@ export default async function runCompletion(
   if(generatedText.slice(0, inputs.length) === inputs){
     generatedText = generatedText.slice(inputs.length);
   }
-  generatedText = generatedText.replace(stopToken, "").replace(middleToken, "");
+  const regexToClear = new RegExp([...stopTokens, ...tokensToClear].map(token => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+  generatedText = generatedText.replace(regexToClear, "");
 
   const resultEntry: ResultEntry = {
     new_prefix: generatedText,

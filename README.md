@@ -2,6 +2,8 @@
 
 It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models). 
 
+** Announcement: latest version of this extension supports Code Llama 13B. Find more info here.
+
 We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
@@ -83,6 +85,17 @@ const res = await fetch(endpoint, {
 
 const json = await res.json() as any as {generated_text: string};  // {"generated_text": ""}
 ```
+
+## Code Llama
+
+To test Code Llama 13B model:
+1. Make sure you have [supplied HF API token](#hf-api-token)
+2. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
+3. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
+
+<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-code-llama.png" width="600px">
+
+Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
 ## Community
 

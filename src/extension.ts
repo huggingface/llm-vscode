@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+import type { TemplateKey } from "./configTemplates";
+import { templates } from "./configTemplates";
 import { registerCommands } from "./commandsHandler";
 import tabnineExtensionProperties from "./globals/tabnineExtensionProperties";
 import {
@@ -17,6 +19,7 @@ export async function activate(
 ): Promise<void> {
   void initStartup(context);
   handleSelection(context);
+  handleConfigTemplateChange(context);
 
   registerStatusBar(context);
 
@@ -55,4 +58,19 @@ function handleSelection(context: vscode.ExtensionContext) {
       vscode.commands.registerTextEditorCommand(HANDLE_IMPORTS, handleImports)
     );
   }
+}
+
+function handleConfigTemplateChange(context: vscode.ExtensionContext) {
+  const listener = vscode.workspace.onDidChangeConfiguration(async event => {
+    if (event.affectsConfiguration('HuggingFaceCode.configTemplate')) {
+        const config = vscode.workspace.getConfiguration("HuggingFaceCode");
+        const configKey = config.get("configTemplate") as TemplateKey;
+        const template = templates[configKey];
+        if(template){
+          const updatePromises = Object.entries(template).map(([key, val]) => config.update(key, val, vscode.ConfigurationTarget.Global));
+          await Promise.all(updatePromises);
+        }
+    }
+  });
+  context.subscriptions.push(listener);
 }
