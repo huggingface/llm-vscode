@@ -2,7 +2,7 @@
 
 It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models). 
 
-** Announcement: latest version of this extension supports Code Llama 13B. Find more info here.
+** Announcement: latest version of this extension supports Code Llama 13B. Find more info [here](#code-llama) how to test Code Llama with this extension.
 
 We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
