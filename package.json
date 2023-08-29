@@ -222,6 +222,11 @@
             "default": 0.2,
             "description": "Sampling temperature"
           },
+          "HuggingFaceCode.maxNewTokens": {
+            "type": "integer",
+            "default": 60,
+            "description": "Max number of new tokens to be generated. The accepted range is [50-500] both ends inclusive. Be warned that the latency of a request will increase with higher number."
+          },
           "HuggingFaceCode.stopTokens": {
             "type": "array",
             "items": {

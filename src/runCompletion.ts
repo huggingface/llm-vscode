@@ -29,8 +29,8 @@ export default async function runCompletion(
   const prefix =  document.getText(new Range(beforeStart, position)) + currentSuggestionText;
   const suffix = document.getText(new Range(position, afterEnd));
 
-  const config: HFCodeConfig = workspace.getConfiguration("HuggingFaceCode") as WorkspaceConfiguration & HFCodeConfig;
-  const { modelIdOrEndpoint, isFillMode, autoregressiveModeTemplate, fillModeTemplate, stopTokens, tokensToClear, temperature } = config;
+  const config = workspace.getConfiguration("HuggingFaceCode") as WorkspaceConfiguration & HFCodeConfig;
+  const { modelIdOrEndpoint, isFillMode, autoregressiveModeTemplate, fillModeTemplate, stopTokens, tokensToClear, temperature, maxNewTokens } = config;
 
   const context = getTabnineExtensionContext();
   const apiToken = await context?.secrets.get("apiToken");
@@ -61,7 +61,7 @@ export default async function runCompletion(
   const data = {
     inputs,
     parameters: {
-      max_new_tokens: 60,
+      max_new_tokens: clipMaxNewTokens(maxNewTokens as number),
       temperature,
       do_sample: temperature > 0,
       top_p: 0.95,
@@ -140,4 +140,10 @@ export function getFileNameWithExtension(document: TextDocument): string {
     return fileName.concat(extension);
   }
   return fileName;
+}
+
+function clipMaxNewTokens(maxNewTokens: number): number {
+  const MIN = 50;
+  const MAX = 500;
+  return Math.min(Math.max(maxNewTokens, MIN), MAX);
 }
