@@ -13,6 +13,7 @@ import { getTabnineExtensionContext } from "./globals/tabnineExtensionContext";
 export type CompletionType = "normal" | "snippet";
 
 let didShowTokenWarning = false;
+const errorShownDate: Record<number, number> = {};
 
 export default async function runCompletion(
   document: TextDocument,
@@ -87,6 +88,12 @@ export default async function runCompletion(
 
   if(!res.ok){
     console.error("Error sending a request", res.status, res.statusText);
+    const FIVE_MIN_MS = 300_000;
+    const showError = !errorShownDate[res.status] || Date.now() - errorShownDate[res.status] > FIVE_MIN_MS;
+    if(showError){
+      errorShownDate[res.status] = Date.now();
+      await window.showErrorMessage(`HF Code Error: code - ${res.status}; msg - ${res.statusText}`);
+    }
     setDefaultStatus();
     return null;
   }
