@@ -8,7 +8,10 @@ We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
 
-Currently supported model is [StarCoder](https://huggingface.co/blog/starcoder) from [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
+The currently supported models are:
+
+* [StarCoder](https://huggingface.co/blog/starcoder) from [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
+* [Code Llama](http://hf.co/codellama) from Meta. Find more info [here](http://hf.co/blog/codellama).
 
 ## Installing
 
