@@ -2,7 +2,8 @@
 
 It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & modified for making it compatible with open source code models on [hf.co/models](https://huggingface.co/models). 
 
-** Announcement: latest version of this extension supports Code Llama 13B. Find more info [here](#code-llama) how to test Code Llama with this extension.
+** Announcement (Aug 25, 2023): latest version of this extension supports [codellama/CodeLlama-13b-hf](hf.co/codellama/CodeLlama-13b-hf). Find more info [here](#code-llama) how to test Code Llama with this extension.
+** Announcement (Sept 4, 2023): latest version of this extension supports [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and [WizardLM/WizardCoder-Python-34B-V1.0](hf.co/WizardLM/WizardCoder-Python-34B-V1.0). Find more info [here](#phind-and-wizardcoder) how to test Code Llama with this extension.
 
 We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
@@ -101,6 +102,17 @@ To test Code Llama 13B model:
 
 Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
+## Phind and WizardCoder
+
+To test [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and/or [WizardLM/WizardCoder-Python-34B-V1.0](hf.co/WizardLM/WizardCoder-Python-34B-V1.0) :
+1. Make sure you have the latest version of this extesion.
+2. Make sure you have [supplied HF API token](#hf-api-token)
+3. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
+4. From the dropdown menu, choose `Phind/Phind-CodeLlama-34B-v2` or `WizardLM/WizardCoder-Python-34B-V1.0`
+
+<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-phind-wizardcoder.png" width="600px">
+
+Read more about Phind-CodeLlama-34B-v2 [here](https://huggingface.co/Phind/Phind-CodeLlama-34B-v2) and WizardCoder-15B-V1.0 [here](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0).
 ## Community
 
 | Repository | Description |

@@ -1,4 +1,4 @@
-const templateKeys = ["bigcode/starcoder", "codellama/CodeLlama-13b-hf", "Custom"] as const;
+const templateKeys = ["bigcode/starcoder", "codellama/CodeLlama-13b-hf", "Phind/Phind-CodeLlama-34B-v2", "WizardLM/WizardCoder-Python-34B-V1.0", "Custom"] as const;
 export type TemplateKey = typeof templateKeys[number];
 
 export interface Config {
@@ -34,7 +34,19 @@ const CodeLlama13BConfig: Config = {
   tokensToClear: [ "<MID>"],
 }
 
+const PhindCodeLlama34Bv2Config: Config = {
+  ...CodeLlama13BConfig,
+  modelIdOrEndpoint: "codellama/CodeLlama-13b-hf",
+}
+
+const WizardCoderPython34Bv1Config: Config = {
+  ...CodeLlama13BConfig,
+  modelIdOrEndpoint: "codellama/CodeLlama-13b-hf",
+}
+
 export const templates: Partial<Record<TemplateKey, Config>> = {
   "bigcode/starcoder": StarCoderConfig,
   "codellama/CodeLlama-13b-hf": CodeLlama13BConfig,
+  "Phind/Phind-CodeLlama-34B-v2": PhindCodeLlama34Bv2Config,
+  "WizardLM/WizardCoder-Python-34B-V1.0": WizardCoderPython34Bv1Config,
 }

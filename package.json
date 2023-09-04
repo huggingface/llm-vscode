@@ -1,7 +1,7 @@
 {
   "publisher": "HuggingFace",
   "name": "huggingface-vscode",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "displayName": "HF Code Autocomplete",
   "description": "AI Autocomplete for OSS code-gen models",
   "icon": "small_logo.png",
@@ -193,7 +193,7 @@
         "properties": {
           "HuggingFaceCode.configTemplate": {
             "type": "string",
-            "enum": ["bigcode/starcoder", "codellama/CodeLlama-13b-hf", "Custom"],
+            "enum": ["bigcode/starcoder", "codellama/CodeLlama-13b-hf", "Phind/Phind-CodeLlama-34B-v2", "WizardLM/WizardCoder-Python-34B-V1.0", "Custom"],
             "default": "bigcode/starcoder",
             "description": "Choose an option from the dropdown."
           },
