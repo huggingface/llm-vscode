@@ -4,7 +4,7 @@ It was forked from [tabnine-vscode](https://github.com/codota/tabnine-vscode) & 
 
 ** Announcement (Aug 25, 2023): latest version of this extension supports [codellama/CodeLlama-13b-hf](hf.co/codellama/CodeLlama-13b-hf). Find more info [here](#code-llama) how to test Code Llama with this extension.
 
-** Announcement (Sept 4, 2023): latest version of this extension supports [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and [WizardLM/WizardCoder-Python-34B-V1.0](hf.co/WizardLM/WizardCoder-Python-34B-V1.0). Find more info [here](#phind-and-wizardcoder) how to test Code Llama with this extension.
+** Announcement (Sept 4, 2023): latest version of this extension supports [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and [WizardLM/WizardCoder-Python-34B-V1.0](hf.co/WizardLM/WizardCoder-Python-34B-V1.0). Find more info [here](#phind-and-wizardcoder) how to test those models with this extension.
 
 We also have extensions for:
 * [neovim](https://github.com/huggingface/hfcc.nvim)
