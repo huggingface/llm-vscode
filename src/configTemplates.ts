@@ -36,12 +36,12 @@ const CodeLlama13BConfig: Config = {
 
 const PhindCodeLlama34Bv2Config: Config = {
   ...CodeLlama13BConfig,
-  modelIdOrEndpoint: "codellama/CodeLlama-13b-hf",
+  modelIdOrEndpoint: "Phind/Phind-CodeLlama-34B-v2",
 }
 
 const WizardCoderPython34Bv1Config: Config = {
   ...CodeLlama13BConfig,
-  modelIdOrEndpoint: "codellama/CodeLlama-13b-hf",
+  modelIdOrEndpoint: "WizardLM/WizardCoder-Python-34B-V1.0",
 }
 
 export const templates: Partial<Record<TemplateKey, Config>> = {
