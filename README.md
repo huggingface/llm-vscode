@@ -94,7 +94,7 @@ const json = await res.json() as any as {generated_text: string};  // {"generate
 ## Code Llama
 
 To test Code Llama 13B model:
-1. Make sure you have the [latest version of this extesion](#installing).
+1. Make sure you have the [latest version of this extension](#installing).
 2. Make sure you have [supplied HF API token](#hf-api-token)
 3. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
 4. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
@@ -105,8 +105,8 @@ Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
 ## Phind and WizardCoder
 
-To test [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and/or [WizardLM/WizardCoder-Python-34B-V1.0](hf.co/WizardLM/WizardCoder-Python-34B-V1.0) :
-1. Make sure you have the [latest version of this extesion](#installing).
+To test [Phind/Phind-CodeLlama-34B-v2](https://hf.co/Phind/Phind-CodeLlama-34B-v2) and/or [WizardLM/WizardCoder-Python-34B-V1.0](https://hf.co/WizardLM/WizardCoder-Python-34B-V1.0) :
+1. Make sure you have the [latest version of this extension](#installing).
 2. Make sure you have [supplied HF API token](#hf-api-token)
 3. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
 4. From the dropdown menu, choose `Phind/Phind-CodeLlama-34B-v2` or `WizardLM/WizardCoder-Python-34B-V1.0`
