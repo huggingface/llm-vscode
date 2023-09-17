@@ -1,21 +1,21 @@
 {
-  "publisher": "HuggingFace",
-  "name": "huggingface-vscode",
-  "version": "0.0.38",
-  "displayName": "HF Code Autocomplete",
-  "description": "AI Autocomplete for OSS code-gen models",
-  "icon": "small_logo.png",
-  "author": "Mishig Davaadorj <mishig@hf.co> (https://hf.co/)",
-  "license": "License at https://github.com/huggingface/huggingface-vscode",
+  "name": "llm-vscode",
+  "displayName": "llm-vscode",
+  "description": "LLM powered development for VS Code",
+  "version": "0.0.39",
+  "publisher": "huggingface",
+  "engines": {
+    "vscode": "^1.82.0"
+  },
   "galleryBanner": {
     "color": "#100f11",
     "theme": "dark"
   },
   "badges": [
     {
-      "url": "https://img.shields.io/github/stars/huggingface/huggingface-vscode?style=social",
-      "description": "Star huggingface-vscode on Github",
-      "href": "https://github.com/huggingface/huggingface-vscode"
+      "url": "https://img.shields.io/github/stars/huggingface/llm-vscode?style=social",
+      "description": "Star llm-vscode on Github",
+      "href": "https://github.com/huggingface/llm-vscode"
     },
     {
       "url": "https://img.shields.io/twitter/follow/huggingface?style=social",
@@ -23,294 +23,59 @@
       "href": "https://twitter.com/huggingface"
     }
   ],
-  "homepage": "https://hf.co",
+  "homepage": "https://huggingface.co",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/huggingface/huggingface-vscode"
+    "url": "https://github.com/huggingface/llm-vscode.git",
+    "type": "git"
   },
   "bugs": {
-    "url": "https://github.com/huggingface/huggingface-vscode/issues",
-    "email": "mishig@hf.co"
+    "url": "https://github.com/huggingface/llm-vscode/issues"
   },
-  "engines": {
-    "vscode": "^1.50.0"
-  },
+  "license": "MIT OR Apache-2.0",
   "categories": [
-    "Programming Languages",
-    "Snippets",
-    "Other"
+    "Machine Learning",
+    "Programming Languages"
   ],
   "keywords": [
-    "javascript",
-    "python",
-    "typescript",
-    "php",
-    "autocomplete",
-    "ruby",
-    "java",
-    "go",
-    "golang",
-    "bash",
-    "kotlin",
-    "html",
-    "css",
-    "ocaml",
-    "perl",
-    "rust",
-    "julia",
-    "lua",
-    "haskell",
-    "c",
-    "cpp",
-    "c++",
-    "csharp",
-    "c#",
-    "react",
-    "swift",
-    "objective-c",
-    "objectivec",
+    "code",
+    "assistant",
     "ai",
-    "method completion",
-    "intellicode",
-    "intellisense",
-    "snippets",
-    "kite",
-    "nodejs",
-    "node",
-    "node.js",
-    "jupyter"
+    "llm",
+    "development",
+    "huggingface"
   ],
   "activationEvents": [
     "*"
   ],
-  "main": "./out/extension",
-  "scripts": {
-    "analyze:bundle": "webpack --env analyzeBundle",
-    "vscode:prepublish": "yarn --frozen-lockfile && yarn clear-out && webpack --mode production",
-    "compile": "webpack --mode development --watch",
-    "build": "webpack --mode development",
-    "test:copyassets": "ncp ./src/test/fixture ./out/test/fixture/",
-    "prettier": "prettier --write src/",
-    "prettier:check": "prettier --check src/",
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix",
-    "test:prepare": "yarn clear-out && tsc && yarn test:copyassets",
-    "test": "yarn test:prepare && node ./out/test/runTest.js",
-    "vsce:package": "vsce package",
-    "vsce:publish": "vsce publish",
-    "ovsx:publish": "ovsx publish",
-    "teamcity:test": "tsc && node ./out/test/runTest.js",
-    "clear-out": "rimraf ./out"
-  },
-  "peerDependencies": {
-    "vscode": "^1.1.37"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.2.14",
-    "@types/debounce": "^1.2.1",
-    "@types/diff": "^5.0.2",
-    "@types/glob": "^7.1.3",
-    "@types/mocha": "^8.2.2",
-    "@types/mock-fs": "^4.13.0",
-    "@types/ncp": "^2.0.4",
-    "@types/node": "^12.0.10",
-    "@types/node-fetch": "^2.6.3",
-    "@types/rimraf": "^3.0.0",
-    "@types/semver": "^7.3.4",
-    "@types/sinon": "^9.0.11",
-    "@types/tmp": "^0.2.0",
-    "@types/vscode": "^1.50.0",
-    "@types/yauzl": "^2.9.1",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^4.18.0",
-    "assert": "^2.0.0",
-    "chai": "^4.2.0",
-    "chai-shallow-deep-equal": "^1.4.6",
-    "deep-object-diff": "^1.1.0",
-    "eslint": "^8.28.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-config-prettier": "^8.2.0",
-    "eslint-import-resolver-typescript": "^3.5.2",
-    "eslint-plugin-import": "^2.26.0",
-    "glob": "^7.1.6",
-    "husky": "^5.1.2",
-    "lint-staged": "^13.0.4",
-    "mocha": "^10.1.0",
-    "mocha-teamcity-reporter": "^3.0.0",
-    "mock-fs": "^4.13.0",
-    "ncp": "^2.0.0",
-    "ovsx": "^0.5.2",
-    "prettier": "2.2.1",
-    "rimraf": "^3.0.2",
-    "sinon": "^10.0.0",
-    "terser-webpack-plugin": "^5.3.6",
-    "ts-loader": "^9.4.1",
-    "ts-mockito": "^2.6.1",
-    "typescript": "^4.2.2",
-    "vsce": "^1.93.0",
-    "vscode-test": "^1.6.1",
-    "webpack": "^5.75.0",
-    "webpack-bundle-analyzer": "^4.7.0",
-    "webpack-cli": "^5.0.0"
-  },
-  "dependencies": {
-    "axios": "^0.21.0",
-    "debounce": "^1.2.1",
-    "diff": "^5.0.0",
-    "eslint-plugin-no-only-tests": "^3.1.0",
-    "extract-zip": "^2.0.1",
-    "https-proxy-agent": "^5.0.0",
-    "node-fetch": "^3.3.0",
-    "semver": "^7.3.2",
-    "systeminformation": "^5.6.10",
-    "tmp": "^0.2.1",
-    "vscode-extension-telemetry": "^0.1.7"
-  },
-  "capabilities": {
-    "virtualWorkspaces": true,
-    "untrustedWorkspaces": {
-      "supported": true
-    }
-  },
+  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "HuggingFaceCode::setApiToken",
-        "title": "Hugging Face Code: Set API token"
-      },
-      {
-        "command": "tabnine.attribution",
-        "title": "Hugging Face Code: Show Code Attribution"
-      },
-      {
-        "command": "HuggingFaceCode::openGithub",
-        "title": "Hugging Face Code: Open project GitHub"
-      }
-    ],
-    "configuration": [
-      {
-        "title": "Hugging Face Code",
-        "properties": {
-          "HuggingFaceCode.configTemplate": {
-            "type": "string",
-            "enum": ["bigcode/starcoder", "codellama/CodeLlama-13b-hf", "Phind/Phind-CodeLlama-34B-v2", "WizardLM/WizardCoder-Python-34B-V1.0", "Custom"],
-            "default": "bigcode/starcoder",
-            "description": "Choose an option from the dropdown."
-          },
-          "HuggingFaceCode.modelIdOrEndpoint": {
-            "type": "string",
-            "default": "bigcode/starcoder",
-            "description": "Supply huggingface model id (ex: `bigcode/starcoder`) or custom endpoint (ex: https://bigcode-large-xl.eu.ngrok.io/generate) to which request will be sent to. When huggingface model id is supplied, hugging face API inference will be used."
-          },
-          "HuggingFaceCode.isFillMode": {
-            "type": "boolean",
-            "default": true,
-            "description": "Whether to send to inference server: codes that are on top of cursor only (isFillMode=false) OR codes that are both above & below the cursor (isFillMode=true)"
-          },
-          "HuggingFaceCode.autoregressiveModeTemplate": {
-            "type": "string",
-            "default": "[prefix]",
-            "description": "Token `[prefix]` is replaced by contents of a text file from the beginning to the cursor. Token `[suffix]` is replaced by contents of a text file from the cursor to the end. So you can provide your own format template for ex: `<s>[prefix]</s>`"
-          },
-          "HuggingFaceCode.fillModeTemplate": {
-            "type": "string",
-            "default": "<fim_prefix>[prefix]<fim_suffix>[suffix]<fim_middle>",
-            "description":  "Token `[prefix]` is replaced by contents of a text file from the beginning to the cursor. Token `[suffix]` is replaced by contents of a text file from the cursor to the end. So you can provide your own format template for ex: `<start>[prefix]<fill>[suffix]<middle>`"
-          },
-          "HuggingFaceCode.temperature": {
-            "type": "float",
-            "default": 0.2,
-            "description": "Sampling temperature"
-          },
-          "HuggingFaceCode.maxNewTokens": {
-            "type": "integer",
-            "default": 60,
-            "description": "Max number of new tokens to be generated. The accepted range is [50-500] both ends inclusive. Be warned that the latency of a request will increase with higher number."
-          },
-          "HuggingFaceCode.stopTokens": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": ["<|endoftext|>"],
-            "description": "(Optional) Stop tokens"
-          },
-          "HuggingFaceCode.tokensToClear": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": ["<fim_middle>"],
-            "description": "(Optional) Tokens that should be cleared from the resulting output. For example, in FIM mode, one usually wants to clear FIM token from resulting outout."
-          },
-          "HuggingFaceCode.attributionWindowSize": {
-            "type": "integer",
-            "default": 250,
-            "description": "Number of characters to scan for code attribution"
-          }
-        }
-      }
-    ],
-    "keybindings": [
-      {
-        "key": "cmd+shift+l",
-        "command": "editor.action.inlineSuggest.trigger"
-      },
-      {
-        "key": "tab",
-        "command": "tabnine.accept-inline-suggestion",
-        "when": "tabnine.snippet-suggestion:enabled && tabnine.in-inline-suggestions || tabnine.inline-suggestion:enabled && tabnine.in-inline-suggestions"
-      },
-      {
-        "key": "tab",
-        "command": "tabnine.tab-override",
-        "when": "tabnine.tab-override && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
-      },
-      {
-        "key": "tab",
-        "command": "editor.action.inlineSuggest.commit",
-        "when": "tabnine.tab-override && inlineSuggestionVisible && !editorTabMovesFocus"
-      },
-      {
-        "key": "cmd+shift+a",
-        "command": "tabnine.attribution"
-      },
-      {
-        "key": "ctrl+z",
-        "mac": "cmd+z",
-        "command": "tabnine.escape-inline-suggestion",
-        "when": "tabnine.snippet-suggestion:enabled && tabnine.in-inline-suggestions || tabnine.inline-suggestion:enabled && tabnine.in-inline-suggestions"
-      },
-      {
-        "key": "alt+]",
-        "command": "tabnine.next-inline-suggestion",
-        "when": "tabnine.snippet-suggestion:enabled && tabnine.in-inline-suggestions || tabnine.inline-suggestion:enabled && tabnine.in-inline-suggestions"
-      },
-      {
-        "key": "alt+[",
-        "command": "tabnine.prev-inline-suggestion",
-        "when": "tabnine.snippet-suggestion:enabled && tabnine.in-inline-suggestions || tabnine.inline-suggestion:enabled && tabnine.in-inline-suggestions"
-      },
-      {
-        "key": "alt+.",
-        "mac": "ctrl+.",
-        "command": "tabnine.snippet-suggestion",
-        "when": "tabnine.snippet-suggestion:enabled"
+        "command": "llm-vscode.afterInsert",
+        "title": "After Insert"
       }
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package -o llm-vscode.vsix"
   },
-  "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write src/"
-  },
-  "__metadata": {
-    "id": "75da638c-c45a-44ea-aa3b-8570a3559810",
-    "publisherDisplayName": "TabNine",
-    "publisherId": "1924b661-7c19-45d9-9800-edeb32848fd7",
-    "isPreReleaseVersion": false
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.82.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "eslint": "^8.47.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.6",
+    "vscode-languageclient": "^8.1.0"
   }
 }

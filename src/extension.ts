@@ -1,76 +1,66 @@
-import * as vscode from "vscode";
-import type { TemplateKey } from "./configTemplates";
-import { templates } from "./configTemplates";
-import { registerCommands } from "./commandsHandler";
-import tabnineExtensionProperties from "./globals/tabnineExtensionProperties";
-import {
-  COMPLETION_IMPORTS,
-  handleImports,
-  HANDLE_IMPORTS,
-  getSelectionHandler,
-} from "./selectionHandler";
-import { registerStatusBar, setDefaultStatus } from "./statusBar/statusBar";
-import { setTabnineExtensionContext } from "./globals/tabnineExtensionContext";
-import installAutocomplete from "./autocompleteInstaller";
-import handlePluginInstalled from "./handlePluginInstalled";
+import * as vscode from 'vscode';
+import { Range } from 'vscode';
 
-export async function activate(
-  context: vscode.ExtensionContext
-): Promise<void> {
-  void initStartup(context);
-  handleSelection(context);
-  handleConfigTemplateChange(context);
+export function activate(context: vscode.ExtensionContext) {
+	console.log(`llm-vscode started, path: ${context.extensionPath}`);
+	vscode.commands.registerCommand('llm-vscode.afterInsert', async (...args) => {
+		console.log('llm-vscode.afterInsert triggered');
+		vscode.window.showInformationMessage('afterInsert: ' + JSON.stringify(args));
+	});
 
-  registerStatusBar(context);
+	const provider: vscode.InlineCompletionItemProvider = {
+		async provideInlineCompletionItems(document, position, context, token) {
+			console.log('provideInlineCompletionItems triggered');
+			const regexp = /\/\/ \[(.+?),(.+?)\)(.*?):(.*)/;
+			if (position.line <= 0) {
+				return;
+			}
 
-  // Do not await on this function as we do not want VSCode to wait for it to finish
-  // before considering TabNine ready to operate.
-  void backgroundInit(context);
+			const result: vscode.InlineCompletionList = {
+				items: [],
+			};
 
-  if (context.extensionMode !== vscode.ExtensionMode.Test) {
-    handlePluginInstalled(context);
-  }
+			let offset = 1;
+			while (offset > 0) {
+				if (position.line - offset < 0) {
+					break;
+				}
 
-  return Promise.resolve();
+				const lineBefore = document.lineAt(position.line - offset).text;
+				const matches = lineBefore.match(regexp);
+				if (!matches) {
+					break;
+				}
+				offset++;
+
+				const start = matches[1];
+				const startInt = parseInt(start, 10);
+				const end = matches[2];
+				const endInt =
+					end === '*'
+						? document.lineAt(position.line).text.length
+						: parseInt(end, 10);
+				const flags = matches[3];
+				const completeBracketPairs = flags.includes('b');
+				const isSnippet = flags.includes('s');
+				const text = matches[4].replace(/\\n/g, '\n');
+
+				result.items.push({
+					insertText: isSnippet ? new vscode.SnippetString(text) : text,
+					range: new Range(position.line, startInt, position.line, endInt),
+					command: {
+						title: 'afterInsert',
+						command: 'llm-vscode.afterInsert',
+						arguments: [1, 2],
+					}
+				});
+			}
+
+			return result;
+		},
+
+	};
+	vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
 }
 
-function initStartup(context: vscode.ExtensionContext): void {
-  setTabnineExtensionContext(context);
-}
-
-async function backgroundInit(context: vscode.ExtensionContext) {
-  setDefaultStatus();
-  void registerCommands(context);
-
-  await installAutocomplete(context);
-}
-
-export async function deactivate(){
-}
-
-function handleSelection(context: vscode.ExtensionContext) {
-  if (tabnineExtensionProperties.isTabNineAutoImportEnabled) {
-    context.subscriptions.push(
-      vscode.commands.registerTextEditorCommand(
-        COMPLETION_IMPORTS,
-        getSelectionHandler(context)
-      ),
-      vscode.commands.registerTextEditorCommand(HANDLE_IMPORTS, handleImports)
-    );
-  }
-}
-
-function handleConfigTemplateChange(context: vscode.ExtensionContext) {
-  const listener = vscode.workspace.onDidChangeConfiguration(async event => {
-    if (event.affectsConfiguration('HuggingFaceCode.configTemplate')) {
-        const config = vscode.workspace.getConfiguration("HuggingFaceCode");
-        const configKey = config.get("configTemplate") as TemplateKey;
-        const template = templates[configKey];
-        if(template){
-          const updatePromises = Object.entries(template).map(([key, val]) => config.update(key, val, vscode.ConfigurationTarget.Global));
-          await Promise.all(updatePromises);
-        }
-    }
-  });
-  context.subscriptions.push(listener);
-}
+export function deactivate() { }
