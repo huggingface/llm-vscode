@@ -51,8 +51,131 @@
   "contributes": {
     "commands": [
       {
-        "command": "llm-vscode.afterInsert",
-        "title": "After Insert"
+        "command": "llm.afterInsert",
+        "title": "LLM: After Insert"
+      },
+      {
+        "command": "llm.login",
+        "title": "LLM: Login"
+      },
+      {
+        "command": "llm.logout",
+        "title": "LLM: Logout"
+      },
+      {
+        "command": "llm.attribution",
+        "title": "LLM: Show Code Attribution"
+      },
+      {
+        "command": "llm.openGithub",
+        "title": "LLM: Open project GitHub"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "LLM",
+        "properties": {
+          "llm.configTemplate": {
+            "type": "string",
+            "enum": [
+              "bigcode/starcoder",
+              "codellama/CodeLlama-13b-hf",
+              "Phind/Phind-CodeLlama-34B-v2",
+              "WizardLM/WizardCoder-Python-34B-V1.0",
+              "Custom"
+            ],
+            "default": "bigcode/starcoder",
+            "description": "Choose your model template from the dropdown."
+          },
+          "llm.modelIdOrEndpoint": {
+            "type": "string",
+            "default": "bigcode/starcoder",
+            "description": "Supply huggingface model id (ex: `bigcode/starcoder`) or custom endpoint (ex: https://bigcode-large-xl.eu.ngrok.io/generate) to which request will be sent to. When huggingface model id is supplied, hugging face API inference will be used."
+          },
+          "llm.fillInTheMiddle.enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable fill in the middle for the current model"
+          },
+          "llm.fillInTheMiddle.prefix": {
+            "type": "string",
+            "default": "<fim_prefix>",
+            "description": "Prefix token"
+          },
+          "llm.fillInTheMiddle.middle": {
+            "type": "string",
+            "default": "<fim_middle>",
+            "description": "Middle token"
+          },
+          "llm.fillInTheMiddle.suffix": {
+            "type": "string",
+            "default": "<fim_suffix>",
+            "description": "Suffix token"
+          },
+          "llm.temperature": {
+            "type": "float",
+            "default": 0.2,
+            "description": "Sampling temperature"
+          },
+          "llm.maxNewTokens": {
+            "type": "integer",
+            "default": 60,
+            "description": "Max number of new tokens to be generated. The accepted range is [50-500] both ends inclusive. Be warned that the latency of a request will increase with higher number."
+          },
+          "llm.contextWindow": {
+            "type": "integer",
+            "default": 8192,
+            "description": "Context window of the model"
+          },
+          "llm.tokensToClear": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "<|endoftext|>"
+            ],
+            "description": "(Optional) Tokens that should be cleared from the resulting output. For example, in FIM mode, one usually wants to clear FIM token from resulting outout."
+          },
+          "llm.attributionWindowSize": {
+            "type": "integer",
+            "default": 250,
+            "description": "Number of characters to scan for code attribution"
+          },
+          "llm.debounceMs": {
+            "type": "integer",
+            "default": 150,
+            "description": "Debounce time in milliseconds"
+          },
+          "llm.tlsSkipVerifyInsecure": {
+            "type": "boolean",
+            "default": false,
+            "description": "Skip TLS verification for insecure connections"
+          },
+          "llm.lsp.binaryPath": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Path to llm-ls binary, useful for debugging or when building from source"
+          },
+          "llm.lsp.version": {
+            "type": "string",
+            "default": "0.1.0",
+            "description": "llm-ls version"
+          }
+        }
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "cmd+shift+l",
+        "command": "editor.action.inlineSuggest.trigger"
+      },
+      {
+        "key": "cmd+shift+a",
+        "command": "llm.attribution"
       }
     ]
   },
