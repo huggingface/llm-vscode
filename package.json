@@ -164,6 +164,11 @@
             "type": "string",
             "default": "0.1.0",
             "description": "llm-ls version"
+          },
+          "llm.lsp.logLevel": {
+            "type": "string",
+            "default": "warn",
+            "description": "llm-ls log level"
           }
         }
       }

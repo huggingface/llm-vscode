@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 		run: {
 			command: binaryPath, transport: TransportKind.stdio, options: {
 				env: {
-					"LLM_LOG_LEVEL": "info",
+					"LLM_LOG_LEVEL": config.get("lsp.logLevel") as string,
 				}
 			}
 		},
@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 			transport: TransportKind.stdio,
 			options: {
 				env: {
-					"LLM_LOG_LEVEL": "info",
+					"LLM_LOG_LEVEL": config.get("lsp.logLevel") as string,
 				}
 			}
 		}
@@ -66,9 +66,8 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage('LLM: Already logged in');
 			return;
 		}
+		const tokenPath = path.join(homedir(), path.sep, ".cache", path.sep, "huggingface", path.sep, "token");
 		const token: string | undefined = await new Promise((res) => {
-			const tokenPath = path.join(homedir(), path.sep, ".cache", path.sep, "huggingface", path.sep, "token");
-			console.log(`tokenPath: ${tokenPath}`);
 			readFile(tokenPath, (err, data) => {
 				if (err) {
 					res(undefined);
@@ -79,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 		if (token !== undefined) {
 			await ctx.secrets.store('apiToken', token);
-			vscode.window.showInformationMessage('LLM: Logged in from cache: ~/.cache/huggingface/token');
+			vscode.window.showInformationMessage(`LLM: Logged in from cache: ~/.cache/huggingface/token ${tokenPath}`);
 			return;
 		}
 		const input = await vscode.window.showInputBox({
@@ -100,7 +99,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const provider: vscode.InlineCompletionItemProvider = {
 		async provideInlineCompletionItems(document, position, context, token) {
-			console.log('provideInlineCompletionItems triggered');
 			if (position.line <= 0) {
 				return;
 			}
