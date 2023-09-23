@@ -138,8 +138,6 @@ To test Code Llama 13B model:
 3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
 4. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
 
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-code-llama.png" width="600px">
-
 Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
 ### Phind and WizardCoder
@@ -149,8 +147,6 @@ To test [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and/o
 2. Make sure you have [supplied HF API token](#hf-api-token)
 3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
 4. From the dropdown menu, choose `Phind/Phind-CodeLlama-34B-v2` or `WizardLM/WizardCoder-Python-34B-V1.0`
-
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-phind-wizardcoder.png" width="600px">
 
 Read more about Phind-CodeLlama-34B-v2 [here](https://huggingface.co/Phind/Phind-CodeLlama-34B-v2) and WizardCoder-15B-V1.0 [here](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0).
 
