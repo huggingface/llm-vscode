@@ -1,9 +1,10 @@
 {
-  "name": "llm-vscode",
+  "name": "huggingface-vscode",
   "displayName": "llm-vscode",
   "description": "LLM powered development for VS Code",
   "version": "0.0.39",
-  "publisher": "huggingface",
+  "publisher": "HuggingFace",
+  "icon": "small_logo.png",
   "engines": {
     "vscode": "^1.82.0"
   },
@@ -31,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/huggingface/llm-vscode/issues"
   },
-  "license": "MIT OR Apache-2.0",
+  "license": "Apache-2.0",
   "categories": [
     "Machine Learning",
     "Programming Languages"
