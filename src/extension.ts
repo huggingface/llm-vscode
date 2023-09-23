@@ -129,24 +129,34 @@ export function activate(context: vscode.ExtensionContext) {
 				ide: "vscode",
 				tokenizer_config: config.get("tokenizer") as object | null,
 			};
-			const completions: Completion[] = await client.sendRequest("llm-ls/getCompletions", params, token);
+			try {
+				const completions: Completion[] = await client.sendRequest("llm-ls/getCompletions", params, token);
 
-			const items = [];
-			for (const completion of completions) {
-				items.push({
-					insertText: completion.generated_text,
-					range: new vscode.Range(position, position),
-					command: {
-						title: 'afterInsert',
-						command: 'llm-vscode.afterInsert',
-						arguments: [{ insertText: completion.generated_text }],
-					}
-				});
+				const items = [];
+				for (const completion of completions as Completion[]) {
+					items.push({
+						insertText: completion.generated_text,
+						range: new vscode.Range(position, position),
+						command: {
+							title: 'afterInsert',
+							command: 'llm-vscode.afterInsert',
+							arguments: [{ insertText: completion.generated_text }],
+						}
+					});
+				}
+
+				return {
+					items,
+				};
+			} catch (e) {
+				const err_msg = (e as Error).message;
+				if (err_msg.includes("is currently loading")) {
+					vscode.window.showWarningMessage(err_msg);
+				} else if (err_msg !== "Canceled") {
+					vscode.window.showErrorMessage(err_msg);
+				}
 			}
 
-			return {
-				items,
-			};
 		},
 
 	};
