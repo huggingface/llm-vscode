@@ -52,28 +52,24 @@
     "commands": [
       {
         "command": "llm.afterInsert",
-        "title": "LLM: After Insert"
+        "title": "Llm: After Insert"
       },
       {
         "command": "llm.login",
-        "title": "LLM: Login"
+        "title": "Llm: Login"
       },
       {
         "command": "llm.logout",
-        "title": "LLM: Logout"
+        "title": "Llm: Logout"
       },
       {
         "command": "llm.attribution",
-        "title": "LLM: Show Code Attribution"
-      },
-      {
-        "command": "llm.openGithub",
-        "title": "LLM: Open project GitHub"
+        "title": "Llm: Show Code Attribution"
       }
     ],
     "configuration": [
       {
-        "title": "LLM",
+        "title": "Llm",
         "properties": {
           "llm.configTemplate": {
             "type": "string",
@@ -90,7 +86,7 @@
           "llm.modelIdOrEndpoint": {
             "type": "string",
             "default": "bigcode/starcoder",
-            "description": "Supply huggingface model id (ex: `bigcode/starcoder`) or custom endpoint (ex: https://bigcode-large-xl.eu.ngrok.io/generate) to which request will be sent to. When huggingface model id is supplied, hugging face API inference will be used."
+            "description": "Supply huggingface model id (ex: `bigcode/starcoder`) or custom endpoint (ex: https://bigcode-large-xl.eu.ngrok.io/generate) to which requests will be sent. When huggingface model id is supplied, hugging face API inference will be used."
           },
           "llm.fillInTheMiddle.enabled": {
             "type": "boolean",
@@ -142,11 +138,6 @@
             "default": 250,
             "description": "Number of characters to scan for code attribution"
           },
-          "llm.debounceMs": {
-            "type": "integer",
-            "default": 150,
-            "description": "Debounce time in milliseconds"
-          },
           "llm.tlsSkipVerifyInsecure": {
             "type": "boolean",
             "default": false,
@@ -160,15 +151,18 @@
             "default": null,
             "description": "Path to llm-ls binary, useful for debugging or when building from source"
           },
-          "llm.lsp.version": {
-            "type": "string",
-            "default": "0.1.0",
-            "description": "llm-ls version"
-          },
           "llm.lsp.logLevel": {
             "type": "string",
             "default": "warn",
             "description": "llm-ls log level"
+          },
+          "llm.tokenizer": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "default": null,
+            "description": "Tokenizer configuration for the model, check out the documentation for more details"
           }
         }
       }
@@ -204,6 +198,7 @@
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
     "typescript": "^5.1.6",
+    "undici": "^5.25.2",
     "vscode-languageclient": "^8.1.0"
   }
 }

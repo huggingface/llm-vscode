@@ -9,6 +9,7 @@ import { TemplateKey, templates } from './configTemplates';
 import { readFile } from 'fs';
 import { homedir } from 'os';
 import * as path from 'path';
+import { fetch } from 'undici';
 
 
 interface Completion {
@@ -63,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const login = vscode.commands.registerCommand('llm.login', async (...args) => {
 		const apiToken = await ctx.secrets.get('apiToken');
 		if (apiToken !== undefined) {
-			vscode.window.showInformationMessage('LLM: Already logged in');
+			vscode.window.showInformationMessage('Llm: Already logged in');
 			return;
 		}
 		const tokenPath = path.join(homedir(), path.sep, ".cache", path.sep, "huggingface", path.sep, "token");
@@ -78,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 		if (token !== undefined) {
 			await ctx.secrets.store('apiToken', token);
-			vscode.window.showInformationMessage(`LLM: Logged in from cache: ~/.cache/huggingface/token ${tokenPath}`);
+			vscode.window.showInformationMessage(`Llm: Logged in from cache: ~/.cache/huggingface/token ${tokenPath}`);
 			return;
 		}
 		const input = await vscode.window.showInputBox({
@@ -87,19 +88,25 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 		if (input !== undefined) {
 			await ctx.secrets.store('apiToken', input);
-			vscode.window.showInformationMessage('LLM: Logged in succesfully');
+			vscode.window.showInformationMessage('Llm: Logged in succesfully');
 		}
 	});
 	ctx.subscriptions.push(login);
 	const logout = vscode.commands.registerCommand('llm.logout', async (...args) => {
 		await ctx.secrets.delete('apiToken');
-		vscode.window.showInformationMessage('LLM: Logged out');
+		vscode.window.showInformationMessage('Llm: Logged out');
 	});
 	ctx.subscriptions.push(logout);
 
+	const attribution = vscode.commands.registerTextEditorCommand('llm.attribution', () => {
+		void highlightStackAttributions();
+	});
+	ctx.subscriptions.push(attribution);
 	const provider: vscode.InlineCompletionItemProvider = {
 		async provideInlineCompletionItems(document, position, context, token) {
+			console.log(context);
 			if (position.line <= 0) {
+				console.log("line <= 0");
 				return;
 			}
 
@@ -119,22 +126,27 @@ export function activate(context: vscode.ExtensionContext) {
 				fim: config.get("fillInTheMiddle") as number,
 				context_window: config.get("contextWindow") as number,
 				tls_skip_verify_insecure: config.get("tlsSkipVerifyInsecure") as boolean,
+				ide: "vscode",
+				tokenizer_config: config.get("tokenizer") as object | null,
 			};
-			const completion: Completion[] = await client.sendRequest("llm-ls/getCompletions", params, token);
-			const insertText = completion[0].generated_text;
+			const completions: Completion[] = await client.sendRequest("llm-ls/getCompletions", params, token);
 
-			const result: vscode.InlineCompletionList = {
-				items: [{
-					insertText,
+			const items = [];
+			for (const completion of completions) {
+				items.push({
+					insertText: completion.generated_text,
+					range: new vscode.Range(position, position),
 					command: {
 						title: 'afterInsert',
 						command: 'llm-vscode.afterInsert',
-						arguments: [{ insertText }],
+						arguments: [{ insertText: completion.generated_text }],
 					}
-				}],
-			};
+				});
+			}
 
-			return result;
+			return {
+				items,
+			};
 		},
 
 	};
@@ -161,4 +173,93 @@ function handleConfigTemplateChange(context: vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(listener);
+}
+
+// TODO: refactor to select only highlighted code
+export default async function highlightStackAttributions(): Promise<void> {
+	const document = vscode.window.activeTextEditor?.document
+	if (!document) return;
+
+	const config = vscode.workspace.getConfiguration("llm");
+	const attributionWindowSize = config.get("attributionWindowSize") as number;
+
+	// get cursor postion and offset
+	const cursorPosition = vscode.window.activeTextEditor?.selection.active;
+	if (!cursorPosition) return;
+	const cursorOffset = document.offsetAt(cursorPosition);
+
+	const start = Math.max(0, cursorOffset - attributionWindowSize);
+	const end = Math.min(document.getText().length, cursorOffset + attributionWindowSize);
+
+	// Select the start to end span
+	if (!vscode.window.activeTextEditor) return;
+	vscode.window.activeTextEditor.selection = new vscode.Selection(document.positionAt(start), document.positionAt(end));
+	// new Range(document.positionAt(start), document.positionAt(end));
+
+
+	const text = document.getText();
+	const textAroundCursor = text.slice(start, end);
+
+	const url = "https://stack.dataportraits.org/overlap";
+	const body = { document: textAroundCursor };
+	console.log("body", body);
+
+	// notify user request has started
+	void vscode.window.showInformationMessage("Searching for nearby code in the stack...");
+
+	const resp = await fetch(url, {
+		method: "POST",
+		body: JSON.stringify(body),
+		headers: { "Content-Type": "application/json" },
+	});
+
+	if (!resp.ok) {
+		return;
+	}
+
+	const json = await resp.json() as any as { spans: [number, number][] }
+	const { spans } = json
+
+	if (spans.length === 0) {
+		void vscode.window.showInformationMessage("No code found in the stack");
+		return;
+	}
+
+	void vscode.window.showInformationMessage("Highlighted code was found in the stack.",
+		"Go to stack search"
+	).then(clicked => {
+		if (clicked) {
+			// open stack search url in browser
+			void vscode.env.openExternal(vscode.Uri.parse("https://huggingface.co/spaces/bigcode/search"));
+		}
+	});
+
+	// combine overlapping spans
+	const combinedSpans: [number, number][] = spans.reduce((acc, span) => {
+		const [s, e] = span;
+		if (acc.length === 0) return [[s, e]];
+		const [lastStart, lastEnd] = acc[acc.length - 1];
+		if (s <= lastEnd) {
+			acc[acc.length - 1] = [lastStart, Math.max(lastEnd, e)];
+		} else {
+			acc.push([s, e]);
+		}
+		return acc;
+	}, [] as [number, number][]);
+
+	const decorations = combinedSpans.map(([startChar, endChar]) => ({ range: new vscode.Range(document.positionAt(startChar + start), document.positionAt(endChar + start)), hoverMessage: "This code might be in the stack!" }))
+
+	// console.log("Highlighting", decorations.map(d => [d.range.start, d.range.end]));
+
+	const decorationType = vscode.window.createTextEditorDecorationType({
+		color: 'red',
+		textDecoration: 'underline',
+
+	});
+
+	vscode.window.activeTextEditor?.setDecorations(decorationType, decorations);
+
+	setTimeout(() => {
+		vscode.window.activeTextEditor?.setDecorations(decorationType, []);
+	}, 5000);
 }

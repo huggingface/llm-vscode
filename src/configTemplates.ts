@@ -1,6 +1,19 @@
 const templateKeys = ["bigcode/starcoder", "codellama/CodeLlama-13b-hf", "Phind/Phind-CodeLlama-34B-v2", "WizardLM/WizardCoder-Python-34B-V1.0", "Custom"] as const;
 export type TemplateKey = typeof templateKeys[number];
 
+export interface TokenizerPathConfig {
+    path: string;
+}
+
+export interface TokenizerRepoConfig {
+    repository: string;
+}
+
+export interface TokenizerUrlConfig {
+    url: string;
+    to: string;
+}
+
 export interface Config {
     modelIdOrEndpoint: string;
     "fillInTheMiddle.enabled": boolean;
@@ -10,6 +23,7 @@ export interface Config {
     temperature: number;
     contextWindow: number;
     tokensToClear: string[];
+    tokenizer: TokenizerPathConfig | TokenizerRepoConfig | TokenizerUrlConfig | null;
 }
 
 const StarCoderConfig: Config = {
@@ -21,6 +35,9 @@ const StarCoderConfig: Config = {
     temperature: 0.2,
     contextWindow: 8192,
     tokensToClear: ["<|endoftext|>"],
+    tokenizer: {
+        repository: "bigcode/starcoder",
+    }
 }
 
 const CodeLlama13BConfig: Config = {
@@ -32,6 +49,9 @@ const CodeLlama13BConfig: Config = {
     temperature: 0.2,
     contextWindow: 4096,
     tokensToClear: ["<EOT>"],
+    tokenizer: {
+        repository: "codellama/CodeLlama-13b-hf",
+    }
 }
 
 const PhindCodeLlama34Bv2Config: Config = {
@@ -42,6 +62,9 @@ const PhindCodeLlama34Bv2Config: Config = {
 const WizardCoderPython34Bv1Config: Config = {
     ...CodeLlama13BConfig,
     modelIdOrEndpoint: "WizardLM/WizardCoder-Python-34B-V1.0",
+    tokenizer: {
+        repository: "WizardLM/WizardCoder-Python-34B-V1.0",
+    }
 }
 
 export const templates: Partial<Record<TemplateKey, Config>> = {

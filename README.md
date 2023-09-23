@@ -6,37 +6,27 @@ We also have extensions for:
 * [neovim](https://github.com/huggingface/llm.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
 
-The currently supported models are:
-
-* [StarCoder](https://huggingface.co/blog/starcoder) from the [BigCode](https://www.bigcode-project.org/) project. Find more info [here](https://huggingface.co/blog/starcoder).
-* [Code Llama](http://hf.co/codellama) from Meta. Find more info [here](http://hf.co/blog/codellama).
-
-To see a more complete list of supported models, you can check the config template.
-
 Previously **huggingface-vscode**.
 
-## Installing
+## Features
 
-Install like any other [vscode extension](https://marketplace.visualstudio.com/items?itemName=HuggingFace.huggingface-vscode).
+### Code completion
 
-By default, this extension uses [bigcode/starcoder](https://huggingface.co/bigcode/starcoder) & [Hugging Face Inference API](https://huggingface.co/inference-api) for the inference. However, you can [configure](#configuring) the extension to query a custom endpoint provided it adheres to the API defined [here](https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task) or [here](https://huggingface.github.io/text-generation-inference/#/Text%20Generation%20Inference/generate).
+This plugin supports "ghost-text" code completion, à la Copilot.
 
-#### HF API token
+### Choose your model
 
-You can supply your HF API token ([hf.co/settings/token](https://hf.co/settings/token)) with this command:
-1. `Cmd/Ctrl+Shift+P` to open VSCode command palette
-2. Type: `LLM: Login`
+Requests for code generation are made via an HTTP request.
 
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-api-token.png" width="800px">
+You can use the Hugging Face [Inference API](https://huggingface.co/inference-api) or your own HTTP endpoint, provided it adheres to the API specified [here](https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task) or [here](https://huggingface.github.io/text-generation-inference/#/Text%20Generation%20Inference/generate).
 
-## Testing
+The list of officially supported models is located in the config template section.
 
-1. Create a new python file
-2. Try typing `def main():`
+### Always fit within the context window
 
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/ext-working.png" width="800px">
+The prompt sent to the model will always be sized to fit within the context window, with the number of tokens determined using [tokenizers](https://github.com/huggingface/tokenizers).
 
-#### Checking if the generated code is in [The Stack](https://huggingface.co/datasets/bigcode/the-stack)
+### Code attribution
 
 Hit `Cmd+shift+a` to check if the generated code is in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
 This is a rapid first-pass attribution check using [stack.dataportraits.org](https://stack.dataportraits.org).
@@ -44,23 +34,27 @@ We check for sequences of at least 50 characters that match a Bloom filter.
 This means false positives are possible and long enough surrounding context is necesssary (see the [paper](https://dataportraits.org/) for details on n-gram striding and sequence length).
 [The dedicated Stack search tool](https://hf.co/spaces/bigcode/search) is a full dataset index and can be used for a complete second pass. 
 
+## Installation
 
-## Checking output
+Install like any other [vscode extension](https://marketplace.visualstudio.com/items?itemName=HuggingFace.huggingface-vscode).
 
-You can see input to & output from the code generation API:
+By default, this extension uses [bigcode/starcoder](https://huggingface.co/bigcode/starcoder) & [Hugging Face Inference API](https://huggingface.co/inference-api) for the inference.
 
-1. Open VSCode `OUTPUT` panel
-2. Choose `LLM VS Code`
+#### HF API token
 
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/ext-output.png" width="800px">
+You can supply your HF API token ([hf.co/settings/token](https://hf.co/settings/token)) with this command:
+1. `Cmd/Ctrl+Shift+P` to open VSCode command palette
+2. Type: `Llm: Login`
 
-## Configuring
+If you previously logged in with `huggingface-cli login` on your system the extension will read the token from disk.
 
-You can configure: endpoint to where request will be sent and special tokens.
+## Configuration
 
-<img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-configs.png" width="800px">
+You can check the full list of configuration settings by opening your settings page (`cmd+,`) and typing `Llm`.
 
-Example:
+### Endpoint
+
+You can configure the endpoint to which requests will be sent.
 
 Let's say your current code is this:
 ```py
@@ -71,10 +65,18 @@ def hello_world():
     print("Hello world")
 ```
 
-Then, the request body will look like:
+The request body will then look like:
 ```js
 const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_world():\n    print("Hello world"){middle token}`
-const data = {inputs, parameters:{max_new_tokens:256}};  // {"inputs": "", "parameters": {"max_new_tokens": 256}}
+const data = { inputs, parameters: { max_new_tokens: 256 } };
+
+const model = configuration.modelIdOrEndpoint;
+let endpoint;
+if (model.startswith("https://")) {
+  endpoint = model;
+} else {
+  endpoint = `https://api-inference.huggingface.co/models/${model}`;
+}
 
 const res = await fetch(endpoint, {
     body: JSON.stringify(data),
@@ -82,27 +84,70 @@ const res = await fetch(endpoint, {
     method: "POST"
 });
 
-const json = await res.json() as any as {generated_text: string};  // {"generated_text": ""}
+const json = await res.json() as { generated_text: string };
 ```
 
-## Code Llama
+Note that the example above is a simplified version to explain what is happening under the hood.
+
+### [**llm-ls**](https://github.com/huggingface/llm-ls)
+
+By default, **llm-ls** is bundled with the extension. When developing locally or if you built your own binary because your platform is not supported, you can set the `llm.lsp.binaryPath` setting to the path of the binary.
+
+### Tokenizer
+
+**llm-ls** uses [**tokenizers**](https://github.com/huggingface/tokenizers) to make sure the prompt fits the `context_window`.
+
+To configure it, you have a few options:
+* No tokenization, **llm-ls** will count the number of characters instead:
+```json
+{
+  "llm.tokenizer": null
+}
+```
+* from a local file on your disk:
+```json
+{
+  "llm.tokenizer": {
+    "path": "/path/to/my/tokenizer.json"
+  }
+}
+```
+* from a Hugging Face repository, **llm-ls** will attempt to download `tokenizer.json` at the root of the repository:
+```json
+{
+  "llm.tokenizer": {
+    "repository": "myusername/myrepo"
+  }
+}
+```
+* from an HTTP endpoint, **llm-ls** will attempt to download a file via an HTTP GET request:
+```json
+{
+  "llm.tokenizer": {
+    "url": "https://my-endpoint.example.com/mytokenizer.json",
+    "to": "/download/path/of/mytokenizer.json"
+  }
+}
+```
+
+### Code Llama
 
 To test Code Llama 13B model:
 1. Make sure you have the [latest version of this extesion](#installing).
 2. Make sure you have [supplied HF API token](#hf-api-token)
-3. Open Vscode Settings (`cmd+,`) & type: `LLM: Config Template`
+3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
 4. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
 
 <img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-code-llama.png" width="600px">
 
 Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
-## Phind and WizardCoder
+### Phind and WizardCoder
 
 To test [Phind/Phind-CodeLlama-34B-v2](hf.co/Phind/Phind-CodeLlama-34B-v2) and/or [WizardLM/WizardCoder-Python-34B-V1.0](hf.co/WizardLM/WizardCoder-Python-34B-V1.0) :
 1. Make sure you have the [latest version of this extesion](#installing).
 2. Make sure you have [supplied HF API token](#hf-api-token)
-3. Open Vscode Settings (`cmd+,`) & type: `Hugging Face Code: Config Template`
+3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
 4. From the dropdown menu, choose `Phind/Phind-CodeLlama-34B-v2` or `WizardLM/WizardCoder-Python-34B-V1.0`
 
 <img src="https://github.com/huggingface/huggingface-vscode/raw/master/assets/set-phind-wizardcoder.png" width="600px">
@@ -112,7 +157,7 @@ Read more about Phind-CodeLlama-34B-v2 [here](https://huggingface.co/Phind/Phind
 ## Developing
 
 1. Clone this repo: `git clone https://github.com/huggingface/llm-vscode`
-2. Install deps: `cd huggingface-vscode && npm i`
+2. Install deps: `cd llm-vscode && npm i`
 3. In vscode, open `Run and Debug` side bar & click `Launch Extension`
 
 ## Community

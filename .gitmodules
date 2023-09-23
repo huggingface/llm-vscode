@@ -1,3 +1,0 @@
-[submodule "llm-ls"]
-	path = llm-ls
-	url = https://github.com/huggingface/llm-ls
