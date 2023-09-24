@@ -139,6 +139,11 @@
             "default": 250,
             "description": "Number of characters to scan for code attribution"
           },
+          "llm.attributionEndpoint": {
+            "type": "string",
+            "default": "https://stack.dataportraits.org/overlap",
+            "description": "Endpoint to which attribution request will be sent to (https://stack.dataportraits.org/overlap for the stack)."
+          },
           "llm.tlsSkipVerifyInsecure": {
             "type": "boolean",
             "default": false,
