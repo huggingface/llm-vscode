@@ -11,7 +11,6 @@ import { homedir } from 'os';
 import * as path from 'path';
 import { fetch } from 'undici';
 
-
 interface Completion {
 	generated_text: string;
 }
@@ -23,18 +22,28 @@ export function activate(context: vscode.ExtensionContext) {
 	ctx = context;
 	handleConfigTemplateChange(ctx);
 	const config = vscode.workspace.getConfiguration("llm");
-	// TODO: bundle llm-ls with vscode extension
-	const binaryPath: string = config.get("lsp.binaryPath") as string;
+	const binaryPath: string | null = config.get("lsp.binaryPath") as string | null;
+	let command: string;
+	if (binaryPath) {
+		command = binaryPath;
+	} else {
+		const ext = process.platform === "win32" ? ".exe" : "";
+		command = vscode.Uri.joinPath(context.extensionUri, "server", `llm-ls${ext}`).fsPath;
+	}
+	if (command.startsWith("~/")) {
+		command = homedir() + command.slice("~".length);
+	}
+	console.log(`command: ${command}`);
 	const serverOptions: ServerOptions = {
 		run: {
-			command: binaryPath, transport: TransportKind.stdio, options: {
+			command, transport: TransportKind.stdio, options: {
 				env: {
 					"LLM_LOG_LEVEL": config.get("lsp.logLevel") as string,
 				}
 			}
 		},
 		debug: {
-			command: binaryPath,
+			command,
 			transport: TransportKind.stdio,
 			options: {
 				env: {
