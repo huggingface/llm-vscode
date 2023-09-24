@@ -192,6 +192,7 @@ export default async function highlightStackAttributions(): Promise<void> {
 
 	const config = vscode.workspace.getConfiguration("llm");
 	const attributionWindowSize = config.get("attributionWindowSize") as number;
+	const attributionEndpoint = config.get("attributionEndpoint") as string;
 
 	// get cursor postion and offset
 	const cursorPosition = vscode.window.activeTextEditor?.selection.active;
@@ -210,14 +211,12 @@ export default async function highlightStackAttributions(): Promise<void> {
 	const text = document.getText();
 	const textAroundCursor = text.slice(start, end);
 
-	const url = "https://stack.dataportraits.org/overlap";
 	const body = { document: textAroundCursor };
-	console.log("body", body);
 
 	// notify user request has started
 	void vscode.window.showInformationMessage("Searching for nearby code in the stack...");
 
-	const resp = await fetch(url, {
+	const resp = await fetch(attributionEndpoint, {
 		method: "POST",
 		body: JSON.stringify(body),
 		headers: { "Content-Type": "application/json" },
