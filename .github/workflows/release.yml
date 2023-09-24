@@ -1,0 +1,151 @@
+name: release
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - 'release/**'
+
+env:
+  FETCH_DEPTH: 0 # pull in the tags for the version string
+  LLM_LS_VERSION: 0.2.0
+
+jobs:
+  package:
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-pc-windows-msvc
+            code-target: win32-x64
+          - target: i686-pc-windows-msvc
+            code-target: win32-ia32
+          # - os: windows-latest
+          #   target: aarch64-pc-windows-msvc
+          #   code-target: win32-arm64
+          - target: x86_64-unknown-linux-gnu
+            code-target: linux-x64
+          - target: aarch64-unknown-linux-gnu
+            code-target: linux-arm64
+          - target: arm-unknown-linux-gnueabihf
+            code-target: linux-armhf
+          - target: x86_64-apple-darwin
+            code-target: darwin-x64
+          - target: aarch64-apple-darwin
+            code-target: darwin-arm64
+          - target: x86_64-unknown-linux-musl
+            code-target: alpine-x64
+
+    env:
+      LLM_LS_TARGET: ${{ matrix.target }}
+
+    name: package (${{ matrix.target }})
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: ${{ env.FETCH_DEPTH }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "huggingface/llm-ls"
+          tag: ${{ env.LLM_LS_VERSION }}
+          fileName: "llm-ls-${{ matrix.target }}.gz"
+
+      - name: Unzip llm-ls
+        if: contains(matrix.code-target, 'win32')
+        run: mkdir server && gunzip -c llm-ls-${{ matrix.target }}.gz  > server/llm-ls.exe && chmod +x server/llm-ls.exe
+
+      - name: Unzip llm-ls
+        if: ${{ !contains(matrix.code-target, 'win32') }}
+        run: mkdir server && gunzip -c llm-ls-${{ matrix.target }}.gz  > server/llm-ls && chmod +x server/llm-ls
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package Extension
+        run: npx vsce package -o "./llm-ls-${{ matrix.code-target }}.vsix" --target ${{ matrix.code-target }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: pkg-${{ matrix.target }}
+          path: ./llm-ls-${{ matrix.code-target }}.vsix
+
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    needs: ["package"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: ${{ env.FETCH_DEPTH }}
+
+      - name: Install Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - run: echo "HEAD_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+      - run: 'echo "HEAD_SHA: $HEAD_SHA"'
+
+      - name: Split branch name
+        env:
+          BRANCH: ${{ github.ref_name }}
+        id: split
+        run: echo "::set-output name=tag::${BRANCH##*/}"
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-aarch64-apple-darwin
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-x86_64-apple-darwin
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-x86_64-unknown-linux-gnu
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-x86_64-unknown-linux-musl
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-aarch64-unknown-linux-gnu
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-arm-unknown-linux-gnueabihf
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-x86_64-pc-windows-msvc
+          path: pkg
+      - uses: actions/download-artifact@v1
+        with:
+          name: pkg-i686-pc-windows-msvc
+          path: pkg
+      # - uses: actions/download-artifact@v1
+      #   with:
+      #     name: pkg-aarch64-pc-windows-msvc
+      #     path: pkg
+      - run: ls -al ./pkg
+
+      - run: npm ci
+
+      - name: Publish Extension (Code Marketplace, release)
+        # token from https://dev.azure.com/huggingface/
+        run: npx vsce publish --pat ${{ secrets.MARKETPLACE_TOKEN }} --packagePath ./pkg/llm-ls-*.vsix
+
+      - name: Publish Extension (OpenVSX, release)
+        run: npx ovsx publish --pat ${{ secrets.OPENVSX_TOKEN }} --packagePath ./pkg/llm-ls-*.vsix
+        timeout-minutes: 2
