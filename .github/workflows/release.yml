@@ -8,7 +8,7 @@ on:
 
 env:
   FETCH_DEPTH: 0 # pull in the tags for the version string
-  LLM_LS_VERSION: 0.2.0
+  LLM_LS_VERSION: 0.2.1
 
 jobs:
   package:
