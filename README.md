@@ -161,3 +161,4 @@ Read more about Phind-CodeLlama-34B-v2 [here](https://huggingface.co/Phind/Phind
 | Repository | Description |
 | --- | --- |
 | [huggingface-vscode-endpoint-server](https://github.com/LucienShui/huggingface-vscode-endpoint-server) | Custom code generation endpoint for this repository |
+| [llm-vscode-inference-server](https://github.com/wangcx18/llm-vscode-inference-server) | An endpoint server for efficiently serving quantized open-source LLMs for code. |
