@@ -89,6 +89,12 @@ const json = await res.json() as { generated_text: string };
 
 Note that the example above is a simplified version to explain what is happening under the hood.
 
+### Keybindings
+
+**llm-vscode** sets two keybindings:
+* you can trigger suggestions with `Cmd+shift+l` by default, which corresponds to the `editor.action.inlineSuggest.trigger` command
+* [code attribution](#code-attribution) is set to `Cmd+shift+a` by default, which corresponds to the `llm.attribution` command
+
 ### [**llm-ls**](https://github.com/huggingface/llm-ls)
 
 By default, **llm-ls** is bundled with the extension. When developing locally or if you built your own binary because your platform is not supported, you can set the `llm.lsp.binaryPath` setting to the path of the binary.
