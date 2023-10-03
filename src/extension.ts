@@ -33,7 +33,6 @@ export function activate(context: vscode.ExtensionContext) {
 	if (command.startsWith("~/")) {
 		command = homedir() + command.slice("~".length);
 	}
-	console.log(`command: ${command}`);
 	const serverOptions: ServerOptions = {
 		run: {
 			command, transport: TransportKind.stdio, options: {
@@ -113,13 +112,14 @@ export function activate(context: vscode.ExtensionContext) {
 	ctx.subscriptions.push(attribution);
 	const provider: vscode.InlineCompletionItemProvider = {
 		async provideInlineCompletionItems(document, position, context, token) {
-			console.log(context);
+			const config = vscode.workspace.getConfiguration("llm");
+			if (!(config.get("enableGhostText") as boolean)) {
+				return;
+			}
 			if (position.line <= 0) {
-				console.log("line <= 0");
 				return;
 			}
 
-			const config = vscode.workspace.getConfiguration("llm");
 			let params = {
 				position,
 				textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),

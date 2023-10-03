@@ -72,6 +72,11 @@
       {
         "title": "Llm",
         "properties": {
+          "llm.enableGhostText": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable \"ghost-text\" completions"
+          },
           "llm.configTemplate": {
             "type": "string",
             "enum": [
