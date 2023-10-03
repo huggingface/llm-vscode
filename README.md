@@ -5,6 +5,7 @@
 We also have extensions for:
 * [neovim](https://github.com/huggingface/llm.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
+* [intellij](https://github.com/huggingface/llm-intellij)
 
 Previously **huggingface-vscode**.
 
