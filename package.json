@@ -72,10 +72,10 @@
       {
         "title": "Llm",
         "properties": {
-          "llm.enableGhostText": {
+          "llm.enableAutoSuggest": {
             "type": "boolean",
             "default": true,
-            "description": "Enable \"ghost-text\" completions"
+            "description": "Enable automatic suggestions"
           },
           "llm.configTemplate": {
             "type": "string",

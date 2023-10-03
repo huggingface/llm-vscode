@@ -113,7 +113,8 @@ export function activate(context: vscode.ExtensionContext) {
 	const provider: vscode.InlineCompletionItemProvider = {
 		async provideInlineCompletionItems(document, position, context, token) {
 			const config = vscode.workspace.getConfiguration("llm");
-			if (!(config.get("enableGhostText") as boolean)) {
+			const autoSuggest = config.get("enableAutoSuggest") as boolean;
+			if (context.triggerKind === vscode.InlineCompletionTriggerKind.Automatic && !autoSuggest) {
 				return;
 			}
 			if (position.line <= 0) {
