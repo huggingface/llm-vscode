@@ -5,6 +5,7 @@
 We also have extensions for:
 * [neovim](https://github.com/huggingface/llm.nvim)
 * [jupyter](https://github.com/bigcode-project/jupytercoder)
+* [intellij](https://github.com/huggingface/llm-intellij)
 
 Previously **huggingface-vscode**.
 
@@ -88,6 +89,12 @@ const json = await res.json() as { generated_text: string };
 ```
 
 Note that the example above is a simplified version to explain what is happening under the hood.
+
+### Keybindings
+
+**llm-vscode** sets two keybindings:
+* you can trigger suggestions with `Cmd+shift+l` by default, which corresponds to the `editor.action.inlineSuggest.trigger` command
+* [code attribution](#code-attribution) is set to `Cmd+shift+a` by default, which corresponds to the `llm.attribution` command
 
 ### [**llm-ls**](https://github.com/huggingface/llm-ls)
 
