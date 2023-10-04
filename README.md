@@ -9,6 +9,11 @@ We also have extensions for:
 
 Previously **huggingface-vscode**.
 
+> [!NOTE]
+> When using the Inference API, you will probably encounter some limitations. Subscribe to the *PRO* plan to avoid getting rate limited in the free tier.
+>
+> https://huggingface.co/pricing#pro
+
 ## Features
 
 ### Code completion
