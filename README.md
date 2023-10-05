@@ -95,6 +95,15 @@ const json = await res.json() as { generated_text: string };
 
 Note that the example above is a simplified version to explain what is happening under the hood.
 
+### Suggestion behavior
+
+You can tune the way the suggestions behave:
+- `llm.enableAutoSuggest` lets you choose to enable or disable "suggest-as-you-type" suggestions.
+- `llm.documentFilter` lets you enable suggestions only on specific files that match the pattern matching syntax you will provide. The object must be of type [`DocumentFilter | DocumentFilter[]`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#documentFilter):
+  - to match on all types of buffers: `llm.documentFilter: { pattern: "**" }`
+  - to match on all files in `my_project/`: `llm.documentFilter: { pattern: "/path/to/my_project/**" }`
+  - to match on all python and rust files: `llm.documentFilter: { pattern: "**/*.{py,rs}" }`
+
 ### Keybindings
 
 **llm-vscode** sets two keybindings:
