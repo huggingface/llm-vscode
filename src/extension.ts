@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {
+	DocumentFilter,
 	LanguageClient,
 	LanguageClientOptions,
 	ServerOptions,
@@ -170,7 +171,8 @@ export function activate(context: vscode.ExtensionContext) {
 		},
 
 	};
-	vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
+	const documentFilter = config.get("documentFilter") as DocumentFilter | DocumentFilter[];
+	vscode.languages.registerInlineCompletionItemProvider(documentFilter, provider);
 }
 
 export function deactivate() {
