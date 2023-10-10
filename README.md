@@ -161,16 +161,6 @@ To test Code Llama 13B model:
 
 Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
-### Phind and WizardCoder
-
-To test [Phind/Phind-CodeLlama-34B-v2](https://hf.co/Phind/Phind-CodeLlama-34B-v2) and/or [WizardLM/WizardCoder-Python-34B-V1.0](https://hf.co/WizardLM/WizardCoder-Python-34B-V1.0) :
-1. Make sure you have the [latest version of this extension](#installing).
-2. Make sure you have [supplied HF API token](#hf-api-token)
-3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
-4. From the dropdown menu, choose `Phind/Phind-CodeLlama-34B-v2` or `WizardLM/WizardCoder-Python-34B-V1.0`
-
-Read more about Phind-CodeLlama-34B-v2 [here](https://huggingface.co/Phind/Phind-CodeLlama-34B-v2) and WizardCoder-15B-V1.0 [here](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0).
-
 ## Developing
 
 1. Clone this repo: `git clone https://github.com/huggingface/llm-vscode`
