@@ -2,7 +2,7 @@
   "name": "huggingface-vscode",
   "displayName": "llm-vscode",
   "description": "LLM powered development for VS Code",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "publisher": "HuggingFace",
   "icon": "small_logo.png",
   "engines": {
