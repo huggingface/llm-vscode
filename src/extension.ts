@@ -54,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 	};
 
 	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: "file" }],
+		documentSelector: [{ scheme: "*" }],
 	};
 	client = new LanguageClient(
 		'llm',
