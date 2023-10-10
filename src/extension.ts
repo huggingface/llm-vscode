@@ -127,7 +127,7 @@ export function activate(context: vscode.ExtensionContext) {
 				textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
 				model: config.get("modelIdOrEndpoint") as string,
 				tokens_to_clear: config.get("tokensToClear") as string[],
-				api_token: (await ctx.secrets.get('apiToken')) ?? "",
+				api_token: await ctx.secrets.get('apiToken'),
 				request_params: {
 					max_new_tokens: config.get("maxNewTokens") as number,
 					temperature: config.get("temperature") as number,
