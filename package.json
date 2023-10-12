@@ -81,6 +81,7 @@
             "type": "string",
             "enum": [
               "bigcode/starcoder",
+              "bigcode/santacoder",
               "codellama/CodeLlama-13b-hf",
               "Phind/Phind-CodeLlama-34B-v2",
               "WizardLM/WizardCoder-Python-34B-V1.0",
