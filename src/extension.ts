@@ -16,6 +16,11 @@ interface Completion {
 	generated_text: string;
 }
 
+interface CompletionResponse {
+	request_id: String,
+	completions: Completion[],
+}
+
 let client: LanguageClient;
 let ctx: vscode.ExtensionContext;
 
@@ -53,8 +58,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	};
 
+	const outputChannel = vscode.window.createOutputChannel('LLM VS Code', { log: true });
 	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{ scheme: "*" }],
+		outputChannel,
 	};
 	client = new LanguageClient(
 		'llm',
@@ -65,8 +72,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	client.start();
 
-	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (...args) => {
-		// TODO: telemetry
+	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (response: CompletionResponse) => {
+		let params = {
+			request_id: response.request_id,
+			accepted_completion: 0,
+			shown_completions: [0],
+			completions: response.completions,
+		};
+		await client.sendRequest("llm-ls/acceptCompletion", params);
 	});
 	ctx.subscriptions.push(afterInsert);
 
@@ -141,17 +154,17 @@ export function activate(context: vscode.ExtensionContext) {
 				tokenizer_config: config.get("tokenizer") as object | null,
 			};
 			try {
-				const completions: Completion[] = await client.sendRequest("llm-ls/getCompletions", params, token);
+				const response: CompletionResponse = await client.sendRequest("llm-ls/getCompletions", params, token);
 
 				const items = [];
-				for (const completion of completions as Completion[]) {
+				for (const completion of response.completions) {
 					items.push({
 						insertText: completion.generated_text,
 						range: new vscode.Range(position, position),
 						command: {
 							title: 'afterInsert',
-							command: 'llm-vscode.afterInsert',
-							arguments: [{ insertText: completion.generated_text }],
+							command: 'llm.afterInsert',
+							arguments: [response],
 						}
 					});
 				}
