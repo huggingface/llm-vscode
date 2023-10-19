@@ -208,7 +208,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "dependencies": {
-    "undici": "^5.25.2",
+    "undici": "^5.26.4",
     "vscode-languageclient": "^8.1.0"
   },
   "devDependencies": {
