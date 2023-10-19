@@ -73,8 +73,8 @@ export function activate(context: vscode.ExtensionContext) {
 	client.start();
 
 	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (response: CompletionResponse) => {
-		let { request_id, completions } = response;
-		let params = {
+		const { request_id, completions } = response;
+		const params = {
 			request_id,
 			accepted_completion: 0,
 			shown_completions: [0],
