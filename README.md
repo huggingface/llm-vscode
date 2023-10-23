@@ -34,7 +34,7 @@ The prompt sent to the model will always be sized to fit within the context wind
 
 ### Code attribution
 
-Hit `Cmd+shift+a` to check if the generated code is in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
+Hit `Cmd+shift+a` to check if the generated code is in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
 This is a rapid first-pass attribution check using [stack.dataportraits.org](https://stack.dataportraits.org).
 We check for sequences of at least 50 characters that match a Bloom filter.
 This means false positives are possible and long enough surrounding context is necesssary (see the [paper](https://dataportraits.org/) for details on n-gram striding and sequence length).
