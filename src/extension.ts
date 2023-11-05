@@ -135,6 +135,8 @@ export function activate(context: vscode.ExtensionContext) {
 			if (position.line <= 0) {
 				return;
 			}
+			// wait for new changes, then send request
+			await delay(config.get("requestDelay") as number);
 
 			let params = {
 				position,
@@ -297,4 +299,8 @@ export default async function highlightStackAttributions(): Promise<void> {
 	setTimeout(() => {
 		vscode.window.activeTextEditor?.setDecorations(decorationType, []);
 	}, 5000);
+}
+
+function delay(s: number) {
+    return new Promise( resolve => setTimeout(resolve, s * 1000) );
 }

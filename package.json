@@ -184,6 +184,11 @@
               "pattern": "**"
             },
             "description": "Filter documents to enable suggestions for"
+          },
+          "llm.requestDelay": {
+            "type": "float",
+            "default": 1.5,
+            "description": "Minimum time interval between requests. This setting avoids unnecessary API calls, typically when the user is still typing."
           }
         }
       }
