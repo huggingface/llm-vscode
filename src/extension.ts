@@ -129,13 +129,23 @@ export function activate(context: vscode.ExtensionContext) {
 		async provideInlineCompletionItems(document, position, context, token) {
 			const config = vscode.workspace.getConfiguration("llm");
 			const autoSuggest = config.get("enableAutoSuggest") as boolean;
+			const requestDelay = config.get("requestDelay") as number;
 			if (context.triggerKind === vscode.InlineCompletionTriggerKind.Automatic && !autoSuggest) {
 				return;
 			}
 			if (position.line <= 0) {
 				return;
 			}
-
+			if (requestDelay > 0){
+				// wait for requestDelay milliseconds, unless the token is cancelled
+				// before sending the request.
+				try{
+					await delay(requestDelay, token);
+				} catch (e) {
+					// if the request is cancelled, return.
+					return;
+				}
+			}
 			let params = {
 				position,
 				textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
@@ -297,4 +307,34 @@ export default async function highlightStackAttributions(): Promise<void> {
 	setTimeout(() => {
 		vscode.window.activeTextEditor?.setDecorations(decorationType, []);
 	}, 5000);
+}
+
+async function delay(milliseconds: number, token: vscode.CancellationToken): Promise<void> {
+	/**
+	 * Wait for a number of milliseconds, unless the token is cancelled.
+	 * It is used to delay the request to the server, so that the user has time to type.
+	 *
+	 * @param milliseconds number of milliseconds to wait
+	 * @param token cancellation token
+	 * @returns a promise that resolves after N milliseconds, unless the token is cancelled.
+	 *
+	 * @remarks This is a workaround for the lack of a debounce function in vscode.
+	*/
+    return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+            if (token.isCancellationRequested) {
+                clearInterval(interval);
+                reject(new Error('Operation cancelled'));
+            }
+        }, 10); // Check every 10 milliseconds for cancellation
+
+        setTimeout(() => {
+            clearInterval(interval);
+            if (!token.isCancellationRequested) {
+                resolve();
+            } else {
+                reject(new Error('Operation cancelled'));
+            }
+        }, milliseconds);
+    });
 }

@@ -72,6 +72,11 @@
       {
         "title": "Llm",
         "properties": {
+          "llm.requestDelay": {
+            "type": "integer",
+            "default": 150,
+            "description": "Delay between requests in milliseconds"
+          },
           "llm.enableAutoSuggest": {
             "type": "boolean",
             "default": true,
