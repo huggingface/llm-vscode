@@ -129,13 +129,19 @@ export function activate(context: vscode.ExtensionContext) {
 		async provideInlineCompletionItems(document, position, context, token) {
 			const config = vscode.workspace.getConfiguration("llm");
 			const autoSuggest = config.get("enableAutoSuggest") as boolean;
+			const requestDelay = config.get("requestDelay") as number;
 			if (context.triggerKind === vscode.InlineCompletionTriggerKind.Automatic && !autoSuggest) {
 				return;
 			}
 			if (position.line < 0) {
 				return;
 			}
-
+			if (requestDelay > 0){
+				const cancelled = await delay(requestDelay, token);
+				if (cancelled){
+					return
+				}
+			}
 			let params = {
 				position,
 				textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
@@ -297,4 +303,30 @@ export default async function highlightStackAttributions(): Promise<void> {
 	setTimeout(() => {
 		vscode.window.activeTextEditor?.setDecorations(decorationType, []);
 	}, 5000);
+}
+
+async function delay(milliseconds: number, token: vscode.CancellationToken): Promise<boolean> {
+	/**
+	 * Wait for a number of milliseconds, unless the token is cancelled.
+	 * It is used to delay the request to the server, so that the user has time to type.
+	 *
+	 * @param milliseconds number of milliseconds to wait
+	 * @param token cancellation token
+	 * @returns a promise that resolves with false after N milliseconds, or true if the token is cancelled.
+	 *
+	 * @remarks This is a workaround for the lack of a debounce function in vscode.
+	*/
+    return new Promise<boolean>((resolve) => {
+        const interval = setInterval(() => {
+            if (token.isCancellationRequested) {
+                clearInterval(interval);
+                resolve(true)
+            }
+        }, 10); // Check every 10 milliseconds for cancellation
+
+        setTimeout(() => {
+            clearInterval(interval);
+            resolve(token.isCancellationRequested)
+        }, milliseconds);
+    });
 }
