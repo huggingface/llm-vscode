@@ -137,11 +137,8 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 			if (requestDelay > 0){
-				// wait for requestDelay milliseconds, unless the token is cancelled
-				// before sending the request.
-				const shouldContinue = await delay(requestDelay, token);
-				if (!shouldContinue){
-					// If delay was cancelled, return early without sending the request.
+				const cancelled = await delay(requestDelay, token);
+				if (cancelled){
 					return
 				}
 			}
@@ -315,7 +312,7 @@ async function delay(milliseconds: number, token: vscode.CancellationToken): Pro
 	 *
 	 * @param milliseconds number of milliseconds to wait
 	 * @param token cancellation token
-	 * @returns a promise that resolves with true after N milliseconds, or false if the token is cancelled.
+	 * @returns a promise that resolves with false after N milliseconds, or true if the token is cancelled.
 	 *
 	 * @remarks This is a workaround for the lack of a debounce function in vscode.
 	*/
@@ -323,13 +320,13 @@ async function delay(milliseconds: number, token: vscode.CancellationToken): Pro
         const interval = setInterval(() => {
             if (token.isCancellationRequested) {
                 clearInterval(interval);
-                resolve(false)
+                resolve(true)
             }
         }, 10); // Check every 10 milliseconds for cancellation
 
         setTimeout(() => {
             clearInterval(interval);
-            resolve(!token.isCancellationRequested)
+            resolve(token.isCancellationRequested)
         }, milliseconds);
     });
 }
