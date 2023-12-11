@@ -139,11 +139,10 @@ export function activate(context: vscode.ExtensionContext) {
 			if (requestDelay > 0){
 				// wait for requestDelay milliseconds, unless the token is cancelled
 				// before sending the request.
-				try{
-					await delay(requestDelay, token);
-				} catch (e) {
-					// if the request is cancelled, return.
-					return;
+				const shouldContinue = await delay(requestDelay, token);
+				if (!shouldContinue){
+					// If delay was cancelled, return early without sending the request.
+					return
 				}
 			}
 			let params = {
@@ -309,32 +308,28 @@ export default async function highlightStackAttributions(): Promise<void> {
 	}, 5000);
 }
 
-async function delay(milliseconds: number, token: vscode.CancellationToken): Promise<void> {
+async function delay(milliseconds: number, token: vscode.CancellationToken): Promise<boolean> {
 	/**
 	 * Wait for a number of milliseconds, unless the token is cancelled.
 	 * It is used to delay the request to the server, so that the user has time to type.
 	 *
 	 * @param milliseconds number of milliseconds to wait
 	 * @param token cancellation token
-	 * @returns a promise that resolves after N milliseconds, unless the token is cancelled.
+	 * @returns a promise that resolves with true after N milliseconds, or false if the token is cancelled.
 	 *
 	 * @remarks This is a workaround for the lack of a debounce function in vscode.
 	*/
-    return new Promise((resolve, reject) => {
+    return new Promise<boolean>((resolve) => {
         const interval = setInterval(() => {
             if (token.isCancellationRequested) {
                 clearInterval(interval);
-                reject(new Error('Operation cancelled'));
+                resolve(false)
             }
         }, 10); // Check every 10 milliseconds for cancellation
 
         setTimeout(() => {
             clearInterval(interval);
-            if (!token.isCancellationRequested) {
-                resolve();
-            } else {
-                reject(new Error('Operation cancelled'));
-            }
+			resolve(!token.isCancellationRequested)
         }, milliseconds);
     });
 }
