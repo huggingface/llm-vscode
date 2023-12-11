@@ -329,7 +329,7 @@ async function delay(milliseconds: number, token: vscode.CancellationToken): Pro
 
         setTimeout(() => {
             clearInterval(interval);
-			resolve(!token.isCancellationRequested)
+            resolve(!token.isCancellationRequested)
         }, milliseconds);
     });
 }
