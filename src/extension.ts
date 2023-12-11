@@ -132,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if (context.triggerKind === vscode.InlineCompletionTriggerKind.Automatic && !autoSuggest) {
 				return;
 			}
-			if (position.line <= 0) {
+			if (position.line < 0) {
 				return;
 			}
 
