@@ -157,6 +157,8 @@ export function activate(context: vscode.ExtensionContext) {
 				fim: config.get("fillInTheMiddle") as number,
 				context_window: config.get("contextWindow") as number,
 				tls_skip_verify_insecure: config.get("tlsSkipVerifyInsecure") as boolean,
+				adaptor: config.get("adaptor") as string,
+				request_body: config.get("requestBody") as object | null,
 				ide: "vscode",
 				tokenizer_config: config.get("tokenizer") as object | null,
 			};

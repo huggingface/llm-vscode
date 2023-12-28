@@ -89,6 +89,8 @@
               "codellama/CodeLlama-13b-hf",
               "Phind/Phind-CodeLlama-34B-v2",
               "WizardLM/WizardCoder-Python-34B-V1.0",
+              "ollama/CodeLlama-7b-code",
+              "openai/chat-gpt-3.5-turbo",
               "Custom"
             ],
             "default": "bigcode/starcoder",
@@ -179,6 +181,22 @@
             ],
             "default": null,
             "description": "Tokenizer configuration for the model, check out the documentation for more details"
+          },
+          "llm.adaptor": {
+            "type": "string",
+            "enum": [
+              "huggingface",
+              "ollama",
+              "openai",
+              "tgi"
+            ],
+            "default": "huggingface",
+            "desciption": "Completion provider to adapt to"
+          },
+            "llm.requestBody": {
+            "type": ["object", "null"],
+            "default": null,
+            "description": "Request body to be sent to the adaptor"
           },
           "llm.documentFilter": {
             "type": [
