@@ -146,21 +146,21 @@ export function activate(context: vscode.ExtensionContext) {
 				position,
 				textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
 				model: config.get("modelIdOrEndpoint") as string,
-				tokens_to_clear: config.get("tokensToClear") as string[],
-				api_token: await ctx.secrets.get('apiToken'),
-				request_params: {
-					max_new_tokens: config.get("maxNewTokens") as number,
+				tokensToClear: config.get("tokensToClear") as string[],
+				apiToken: await ctx.secrets.get('apiToken'),
+				requestParams: {
+					maxNewTokens: config.get("maxNewTokens") as number,
 					temperature: config.get("temperature") as number,
-					do_sample: true,
-					top_p: 0.95,
+					doSample: true,
+					topP: 0.95,
 				},
 				fim: config.get("fillInTheMiddle") as number,
-				context_window: config.get("contextWindow") as number,
-				tls_skip_verify_insecure: config.get("tlsSkipVerifyInsecure") as boolean,
+				contextWindow: config.get("contextWindow") as number,
+				tlsSkipVerifyInsecure: config.get("tlsSkipVerifyInsecure") as boolean,
 				adaptor: config.get("adaptor") as string,
-				request_body: config.get("requestBody") as object | null,
+				requestBody: config.get("requestBody") as object | null,
 				ide: "vscode",
-				tokenizer_config: config.get("tokenizer") as object | null,
+				tokenizerConfig: config.get("tokenizer") as object | null,
 			};
 			try {
 				const response: CompletionResponse = await client.sendRequest("llm-ls/getCompletions", params, token);
