@@ -72,12 +72,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	client.start();
 
-	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (response: CompletionResponse) => {
+	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (response?: CompletionResponse) => {
+		if (!response) {
+			return;
+		}
 		const { request_id, completions } = response;
 		const params = {
-			request_id,
-			accepted_completion: 0,
-			shown_completions: [0],
+			requestId: request_id,
+			acceptedCompletion: 0,
+			shownCompletions: [0],
 			completions,
 		};
 		await client.sendRequest("llm-ls/acceptCompletion", params);
@@ -157,7 +160,6 @@ export function activate(context: vscode.ExtensionContext) {
 				fim: config.get("fillInTheMiddle") as number,
 				contextWindow: config.get("contextWindow") as number,
 				tlsSkipVerifyInsecure: config.get("tlsSkipVerifyInsecure") as boolean,
-				requestBody: config.get("requestBody") as object | null,
 				ide: "vscode",
 				tokenizerConfig: config.get("tokenizer") as object | null,
 			};
