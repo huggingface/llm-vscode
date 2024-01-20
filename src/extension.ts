@@ -23,8 +23,16 @@ interface CompletionResponse {
 
 let client: LanguageClient;
 let ctx: vscode.ExtensionContext;
+let loadingIndicator: vscode.StatusBarItem;
 
-export function activate(context: vscode.ExtensionContext) {
+function createLoadingIndicator(): vscode.StatusBarItem {
+	let li = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10)
+	li.text = "$(loading~spin) LLM"
+	li.tooltip = "Generating completions..."
+	return li
+}
+
+export async function activate(context: vscode.ExtensionContext) {
 	ctx = context;
 	handleConfigTemplateChange(ctx);
 	const config = vscode.workspace.getConfiguration("llm");
@@ -43,6 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
 		run: {
 			command, transport: TransportKind.stdio, options: {
 				env: {
+					"RUST_BACKTRACE": "1",
 					"LLM_LOG_LEVEL": config.get("lsp.logLevel") as string,
 				}
 			}
@@ -52,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 			transport: TransportKind.stdio,
 			options: {
 				env: {
+					"RUST_BACKTRACE": "1",
 					"LLM_LOG_LEVEL": config.get("lsp.logLevel") as string,
 				}
 			}
@@ -70,7 +80,9 @@ export function activate(context: vscode.ExtensionContext) {
 		clientOptions
 	);
 
-	client.start();
+	loadingIndicator = createLoadingIndicator()
+
+	await client.start();
 
 	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (response: CompletionResponse) => {
 		const { request_id, completions } = response;
@@ -161,7 +173,9 @@ export function activate(context: vscode.ExtensionContext) {
 				tokenizer_config: config.get("tokenizer") as object | null,
 			};
 			try {
+				loadingIndicator.show()
 				const response: CompletionResponse = await client.sendRequest("llm-ls/getCompletions", params, token);
+				loadingIndicator.hide()
 
 				const items = [];
 				for (const completion of response.completions) {
