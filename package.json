@@ -120,7 +120,7 @@
             "description": "Suffix token"
           },
           "llm.temperature": {
-            "type": "float",
+            "type": "number",
             "default": 0.2,
             "description": "Sampling temperature"
           },
