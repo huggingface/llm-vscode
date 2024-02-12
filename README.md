@@ -76,7 +76,7 @@ The request body will then look like:
 const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_world():\n    print("Hello world"){middle token}`
 const data = { inputs, parameters: { max_new_tokens: 256 } };
 
-const model = configuration.modelIdOrEndpoint;
+const model = configuration.modelId;
 let endpoint;
 if (model.startswith("https://")) {
   endpoint = model;

@@ -28,6 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 	ctx = context;
 	handleConfigTemplateChange(ctx);
 	const config = vscode.workspace.getConfiguration("llm");
+	// TODO: support TransportKind.socket
 	const binaryPath: string | null = config.get("lsp.binaryPath") as string | null;
 	let command: string;
 	if (binaryPath) {
@@ -75,9 +76,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const afterInsert = vscode.commands.registerCommand('llm.afterInsert', async (response: CompletionResponse) => {
 		const { request_id, completions } = response;
 		const params = {
-			request_id,
-			accepted_completion: 0,
-			shown_completions: [0],
+			requestId: request_id,
+			acceptedCompletion: 0,
+			shownCompletions: [0],
 			completions,
 		};
 		await client.sendRequest("llm-ls/acceptCompletion", params);
@@ -136,29 +137,30 @@ export function activate(context: vscode.ExtensionContext) {
 			if (position.line < 0) {
 				return;
 			}
-			if (requestDelay > 0){
+			if (requestDelay > 0) {
 				const cancelled = await delay(requestDelay, token);
-				if (cancelled){
+				if (cancelled) {
 					return
 				}
+			}
+			let tokenizerConfig: any = config.get("tokenizer");
+			if (tokenizerConfig != null && tokenizerConfig.repository != null && tokenizerConfig.api_token == null) {
+				tokenizerConfig.api_token = await ctx.secrets.get('apiToken');
 			}
 			let params = {
 				position,
 				textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-				model: config.get("modelIdOrEndpoint") as string,
-				tokens_to_clear: config.get("tokensToClear") as string[],
-				api_token: await ctx.secrets.get('apiToken'),
-				request_params: {
-					max_new_tokens: config.get("maxNewTokens") as number,
-					temperature: config.get("temperature") as number,
-					do_sample: true,
-					top_p: 0.95,
-				},
+				model: config.get("modelId") as string,
+				backend: config.get("backend") as string,
+				url: config.get("url") as string | null,
+				tokensToClear: config.get("tokensToClear") as string[],
+				apiToken: await ctx.secrets.get('apiToken'),
+				requestBody: config.get("requestBody") as object,
 				fim: config.get("fillInTheMiddle") as number,
-				context_window: config.get("contextWindow") as number,
-				tls_skip_verify_insecure: config.get("tlsSkipVerifyInsecure") as boolean,
+				contextWindow: config.get("contextWindow") as number,
+				tlsSkipVerifyInsecure: config.get("tlsSkipVerifyInsecure") as boolean,
 				ide: "vscode",
-				tokenizer_config: config.get("tokenizer") as object | null,
+				tokenizerConfig,
 			};
 			try {
 				const response: CompletionResponse = await client.sendRequest("llm-ls/getCompletions", params, token);
@@ -316,17 +318,17 @@ async function delay(milliseconds: number, token: vscode.CancellationToken): Pro
 	 *
 	 * @remarks This is a workaround for the lack of a debounce function in vscode.
 	*/
-    return new Promise<boolean>((resolve) => {
-        const interval = setInterval(() => {
-            if (token.isCancellationRequested) {
-                clearInterval(interval);
-                resolve(true)
-            }
-        }, 10); // Check every 10 milliseconds for cancellation
+	return new Promise<boolean>((resolve) => {
+		const interval = setInterval(() => {
+			if (token.isCancellationRequested) {
+				clearInterval(interval);
+				resolve(true)
+			}
+		}, 10); // Check every 10 milliseconds for cancellation
 
-        setTimeout(() => {
-            clearInterval(interval);
-            resolve(token.isCancellationRequested)
-        }, milliseconds);
-    });
+		setTimeout(() => {
+			clearInterval(interval);
+			resolve(token.isCancellationRequested)
+		}, milliseconds);
+	});
 }

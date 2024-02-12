@@ -2,7 +2,7 @@
   "name": "huggingface-vscode",
   "displayName": "llm-vscode",
   "description": "LLM powered development for VS Code",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "publisher": "HuggingFace",
   "icon": "small_logo.png",
   "engines": {
@@ -85,19 +85,39 @@
           "llm.configTemplate": {
             "type": "string",
             "enum": [
-              "bigcode/starcoder",
-              "codellama/CodeLlama-13b-hf",
-              "Phind/Phind-CodeLlama-34B-v2",
-              "WizardLM/WizardCoder-Python-34B-V1.0",
+              "hf/bigcode/starcoder",
+              "hf/codellama/CodeLlama-13b-hf",
+              "hf/Phind/Phind-CodeLlama-34B-v2",
+              "hf/WizardLM/WizardCoder-Python-34B-V1.0",
+              "ollama/codellama:7b",
               "Custom"
             ],
-            "default": "bigcode/starcoder",
-            "description": "Choose your model template from the dropdown."
+            "default": "hf/bigcode/starcoder",
+            "description": "Choose your model template from the dropdown"
           },
-          "llm.modelIdOrEndpoint": {
+          "llm.modelId": {
             "type": "string",
             "default": "bigcode/starcoder",
-            "description": "Supply huggingface model id (ex: `bigcode/starcoder`) or custom endpoint (ex: https://bigcode-large-xl.eu.ngrok.io/generate) to which requests will be sent. When huggingface model id is supplied, hugging face API inference will be used."
+            "description": "Model id (ex: `bigcode/starcoder`), will be used to route your request to the appropriate model"
+          },
+          "llm.backend": {
+            "type": "string",
+            "enum": [
+              "huggingface",
+              "ollama",
+              "openai",
+              "tgi"
+            ],
+            "default": "huggingface",
+            "description": "Backend used by the extension"
+          },
+          "llm.url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "HTTP URL of the backend, when null will use the default url for the Inference API"
           },
           "llm.fillInTheMiddle.enabled": {
             "type": "boolean",
@@ -119,19 +139,20 @@
             "default": "<fim_suffix>",
             "description": "Suffix token"
           },
-          "llm.temperature": {
-            "type": "float",
-            "default": 0.2,
-            "description": "Sampling temperature"
-          },
-          "llm.maxNewTokens": {
-            "type": "integer",
-            "default": 60,
-            "description": "Max number of new tokens to be generated. The accepted range is [50-500] both ends inclusive. Be warned that the latency of a request will increase with higher number."
+          "llm.requestBody": {
+            "type": "object",
+            "default": {
+              "parameters": {
+                "max_new_tokens": 60,
+                "temperature": 0.2,
+                "top_p": 0.95
+              }
+            },
+            "description": "Whatever you set here will be sent as is as the HTTP POST request body to the chosen backend. Model and prompt will be added automatically."
           },
           "llm.contextWindow": {
             "type": "integer",
-            "default": 8192,
+            "default": 2048,
             "description": "Context window of the model"
           },
           "llm.tokensToClear": {
@@ -152,7 +173,7 @@
           "llm.attributionEndpoint": {
             "type": "string",
             "default": "https://stack.dataportraits.org/overlap",
-            "description": "Endpoint to which attribution request will be sent to (https://stack.dataportraits.org/overlap for the stack)."
+            "description": "Endpoint to which attribution request will be sent to (https://stack.dataportraits.org/overlap for the stack)"
           },
           "llm.tlsSkipVerifyInsecure": {
             "type": "boolean",
@@ -166,6 +187,14 @@
             ],
             "default": null,
             "description": "Path to llm-ls binary, useful for debugging or when building from source"
+          },
+          "llm.lsp.port": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "default": null,
+            "description": "When running llm-ls with `--port`, port for the llm-ls server"
           },
           "llm.lsp.logLevel": {
             "type": "string",
@@ -213,21 +242,21 @@
     "test": "node ./out/test/runTest.js"
   },
   "dependencies": {
-    "undici": "^5.26.4",
-    "vscode-languageclient": "^8.1.0"
+    "undici": "^6.6.2",
+    "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.1",
+    "@types/mocha": "^10.0.6",
     "@types/node": "16.x",
     "@types/vscode": "^1.82.0",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
-    "@vscode/test-electron": "^2.3.4",
-    "@vscode/vsce": "^2.21.0",
-    "eslint": "^8.47.0",
-    "glob": "^10.3.3",
-    "mocha": "^10.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^2.23.0",
+    "eslint": "^8.56.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.3.0",
     "ovsx": "^0.8.3",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   }
 }
