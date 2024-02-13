@@ -24,7 +24,7 @@ This plugin supports "ghost-text" code completion, à la Copilot.
 
 Requests for code generation are made via an HTTP request.
 
-You can use the Hugging Face [Inference API](https://huggingface.co/inference-api) or your own HTTP endpoint, provided it adheres to the API specified [here](https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task) or [here](https://huggingface.github.io/text-generation-inference/#/Text%20Generation%20Inference/generate).
+You can use the Hugging Face [Inference API](https://huggingface.co/inference-api) or your own HTTP endpoint, provided it adheres to the APIs listed in [backend](#backend).
 
 The list of officially supported models is located in the config template section.
 
@@ -34,7 +34,7 @@ The prompt sent to the model will always be sized to fit within the context wind
 
 ### Code attribution
 
-Hit `Cmd+shift+a` to check if the generated code is in in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
+Hit `Cmd+shift+a` to check if the generated code is in [The Stack](https://huggingface.co/datasets/bigcode/the-stack).
 This is a rapid first-pass attribution check using [stack.dataportraits.org](https://stack.dataportraits.org).
 We check for sequences of at least 50 characters that match a Bloom filter.
 This means false positives are possible and long enough surrounding context is necesssary (see the [paper](https://dataportraits.org/) for details on n-gram striding and sequence length).
@@ -58,9 +58,13 @@ If you previously logged in with `huggingface-cli login` on your system the exte
 
 You can check the full list of configuration settings by opening your settings page (`cmd+,`) and typing `Llm`.
 
-### Endpoint
+### Backend
 
-You can configure the endpoint to which requests will be sent.
+You can configure the backend to which requests will be sent. **llm-vscode** supports the following backends:
+- `huggingface`: The Hugging Face Inference API (default)
+- `ollama`: [Ollama](https://ollama.com)
+- `openai`: any OpenAI compatible API (e.g. [llama-cpp-python](https://github.com/abetlen/llama-cpp-python))
+- `tgi`: [Text Generation Inference](https://github.com/huggingface/text-generation-inference)
 
 Let's say your current code is this:
 ```py
@@ -74,14 +78,25 @@ def hello_world():
 The request body will then look like:
 ```js
 const inputs = `{start token}import numpy as np\nimport scipy as sp\n{end token}def hello_world():\n    print("Hello world"){middle token}`
-const data = { inputs, parameters: { max_new_tokens: 256 } };
+const data = { inputs, ...configuration.requestBody };
 
 const model = configuration.modelId;
 let endpoint;
-if (model.startswith("https://")) {
-  endpoint = model;
-} else {
-  endpoint = `https://api-inference.huggingface.co/models/${model}`;
+switch(configuration.backend) {
+    case "huggingface":
+        let url;
+        if (configuration.url === null) {
+          url = "https://api-inference.huggingface.co";
+        } else {
+          url = configuration.url;
+        }
+        endpoint = `${url}/models/${model}`;
+        break;
+    case "ollama":
+    case "openai":
+    case "tgi":
+        endpoint = configuration.url;
+        break;
 }
 
 const res = await fetch(endpoint, {
@@ -137,10 +152,13 @@ To configure it, you have a few options:
 ```json
 {
   "llm.tokenizer": {
-    "repository": "myusername/myrepo"
+    "repository": "myusername/myrepo",
+    "api_token": null,
   }
 }
 ```
+Note: when `api_token` is set to null, it will use the token you set with `Llm: Login` command. If you want to use a different token, you can set it here.
+
 * from an HTTP endpoint, **llm-ls** will attempt to download a file via an HTTP GET request:
 ```json
 {
@@ -157,7 +175,7 @@ To test Code Llama 13B model:
 1. Make sure you have the [latest version of this extension](#installing).
 2. Make sure you have [supplied HF API token](#hf-api-token)
 3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
-4. From the dropdown menu, choose `codellama/CodeLlama-13b-hf`
+4. From the dropdown menu, choose `hf/codellama/CodeLlama-13b-hf`
 
 Read more [here](https://huggingface.co/blog/codellama) about Code LLama.
 
@@ -167,15 +185,19 @@ To test [Phind/Phind-CodeLlama-34B-v2](https://hf.co/Phind/Phind-CodeLlama-34B-v
 1. Make sure you have the [latest version of this extension](#installing).
 2. Make sure you have [supplied HF API token](#hf-api-token)
 3. Open Vscode Settings (`cmd+,`) & type: `Llm: Config Template`
-4. From the dropdown menu, choose `Phind/Phind-CodeLlama-34B-v2` or `WizardLM/WizardCoder-Python-34B-V1.0`
+4. From the dropdown menu, choose `hf/Phind/Phind-CodeLlama-34B-v2` or `hf/WizardLM/WizardCoder-Python-34B-V1.0`
 
 Read more about Phind-CodeLlama-34B-v2 [here](https://huggingface.co/Phind/Phind-CodeLlama-34B-v2) and WizardCoder-15B-V1.0 [here](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0).
 
 ## Developing
 
-1. Clone this repo: `git clone https://github.com/huggingface/llm-vscode`
-2. Install deps: `cd llm-vscode && npm i`
-3. In vscode, open `Run and Debug` side bar & click `Launch Extension`
+1. Clone `llm-ls`: `git clone https://github.com/huggingface/llm-ls`
+2. Build `llm-ls`: `cd llm-ls && cargo build` (you can also use `cargo build --release` for a release build)
+3. Clone this repo: `git clone https://github.com/huggingface/llm-vscode`
+4. Install deps: `cd llm-vscode && npm ci`
+5. In vscode, open `Run and Debug` side bar & click `Launch Extension`
+6. In the new vscode window, set the `llm.lsp.binaryPath` setting to the path of the `llm-ls` binary you built in step 2 (e.g. `/path/to/llm-ls/target/debug/llm-ls`)
+7. Close the window and restart the extension with `F5` or like in `5.`
 
 ## Community
 
