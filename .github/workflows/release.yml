@@ -17,8 +17,6 @@ jobs:
         include:
           - target: x86_64-pc-windows-msvc
             code-target: win32-x64
-          - target: i686-pc-windows-msvc
-            code-target: win32-ia32
           # - os: windows-latest
           #   target: aarch64-pc-windows-msvc
           #   code-target: win32-arm64
@@ -129,10 +127,6 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: pkg-x86_64-pc-windows-msvc
-          path: pkg
-      - uses: actions/download-artifact@v1
-        with:
-          name: pkg-i686-pc-windows-msvc
           path: pkg
       # - uses: actions/download-artifact@v1
       #   with:
