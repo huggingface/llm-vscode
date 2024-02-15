@@ -89,6 +89,7 @@
               "hf/codellama/CodeLlama-13b-hf",
               "hf/Phind/Phind-CodeLlama-34B-v2",
               "hf/WizardLM/WizardCoder-Python-34B-V1.0",
+              "hf/deepseek-ai/deepseek-coder-6.7b-base",
               "ollama/codellama:7b",
               "Custom"
             ],
