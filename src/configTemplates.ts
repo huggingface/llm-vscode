@@ -1,4 +1,5 @@
-const templateKeys = ["hf/bigcode/starcoder", "hf/codellama/CodeLlama-13b-hf", "hf/Phind/Phind-CodeLlama-34B-v2", "hf/WizardLM/WizardCoder-Python-34B-V1.0", "ollama/codellama:7b", "hf/deepseek-ai/deepseek-coder-6.7b-base", "Custom"] as const;
+const templateKeys = ["hf/bigcode/starcoder", "hf/codellama/CodeLlama-13b-hf", "hf/Phind/Phind-CodeLlama-34B-v2", "hf/WizardLM/WizardCoder-Python-34B-V1.0", "ollama/codellama:7b", "hf/deepseek-ai/deepseek-coder-6.7b-base","llamacpp/deepseek-coder6.7b-base", "Custom"] as const;
+
 export type TemplateKey = typeof templateKeys[number];
 
 export interface TokenizerPathConfig {
@@ -16,7 +17,7 @@ export interface TokenizerUrlConfig {
 
 export interface Config {
 	modelId: string;
-	backend: "huggingface" | "ollama" | "openai" | "tgi";
+	backend: "huggingface" | "ollama" | "openai" | "tgi" | "llamacpp";
 	url: string | null;
 	"fillInTheMiddle.enabled": boolean;
 	"fillInTheMiddle.prefix": string;
@@ -95,6 +96,7 @@ const HfDeepSeekConfig: Config = {
 			temperature: 0.1,
 			top_p: 0.95
 		}
+
 	}
 }
 
@@ -129,6 +131,35 @@ const OllamaCodeLlama7BConfig: Config = {
 	}
 }
 
+const LlamaCppDeepSeekConfig: Config = {
+	modelId: "deepseek:6b",
+	backend: "llamacpp",
+	"fillInTheMiddle.enabled": true,
+	"fillInTheMiddle.prefix": "<｜fim▁begin｜>",
+	"fillInTheMiddle.middle": "<｜fim▁end｜>",
+	"fillInTheMiddle.suffix": "<｜fim▁hole｜>",
+	url: "http://localhost:8080/completion",
+	tokensToClear: ["<｜end▁of▁sentence｜>"],
+	requestBody: {
+		cache_prompt: true,
+		min_p: 0.05,
+		repeat_penalty:1.0,
+		stream: false,
+		top_p: 0.95,
+		presence_penalty: 0,
+		temperature: 0,
+		slot_id: 0,
+		grammar: "",
+		image_data: [],
+		top_k: 40,
+		n_predict: 120
+	},
+	contextWindow: 4096,
+	tokenizer: {
+		repository: "deepseek-ai/deepseek-coder-6.7b-base"
+	}
+}
+
 export const templates: Partial<Record<TemplateKey, Config>> = {
 	"hf/bigcode/starcoder": HfStarCoderConfig,
 	"hf/codellama/CodeLlama-13b-hf": HfCodeLlama13BConfig,
@@ -136,4 +167,5 @@ export const templates: Partial<Record<TemplateKey, Config>> = {
 	"hf/WizardLM/WizardCoder-Python-34B-V1.0": HfWizardCoderPython34Bv1Config,
     "hf/deepseek-ai/deepseek-coder-6.7b-base": HfDeepSeekConfig,
 	"ollama/codellama:7b": OllamaCodeLlama7BConfig,
+	"llamacpp/deepseek-coder6.7b-base": LlamaCppDeepSeekConfig
 }
