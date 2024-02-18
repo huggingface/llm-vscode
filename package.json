@@ -91,6 +91,7 @@
               "hf/WizardLM/WizardCoder-Python-34B-V1.0",
               "hf/deepseek-ai/deepseek-coder-6.7b-base",
               "ollama/codellama:7b",
+              "llamacpp/deepseek-coder6.7b-base",
               "Custom"
             ],
             "default": "hf/bigcode/starcoder",
@@ -107,7 +108,8 @@
               "huggingface",
               "ollama",
               "openai",
-              "tgi"
+              "tgi",
+              "llamacpp"
             ],
             "default": "huggingface",
             "description": "Backend used by the extension"
