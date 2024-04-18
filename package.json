@@ -226,7 +226,8 @@
     "keybindings": [
       {
         "key": "cmd+shift+l",
-        "command": "editor.action.inlineSuggest.trigger"
+        "command": "editor.action.inlineSuggest.trigger",
+        "when": "!editorFocus || !inSearchEditor"
       },
       {
         "key": "cmd+shift+a",
