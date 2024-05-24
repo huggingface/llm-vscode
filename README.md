@@ -83,20 +83,8 @@ const data = { inputs, ...configuration.requestBody };
 const model = configuration.modelId;
 let endpoint;
 switch(configuration.backend) {
-    case "huggingface":
-        let url;
-        if (configuration.url === null) {
-          url = "https://api-inference.huggingface.co";
-        } else {
-          url = configuration.url;
-        }
-        endpoint = `${url}/models/${model}`;
-        break;
-    case "ollama":
-    case "openai":
-    case "tgi":
-        endpoint = configuration.url;
-        break;
+    // cf URL construction
+    let endpoint = build_url(configuration);
 }
 
 const res = await fetch(endpoint, {
@@ -109,6 +97,15 @@ const json = await res.json() as { generated_text: string };
 ```
 
 Note that the example above is a simplified version to explain what is happening under the hood.
+
+#### URL construction
+
+The endpoint URL that is queried to fetch suggestions is build the following way:
+- depending on the backend, it will try to append the correct path to the base URL located in the configuration (e.g. `{url}/v1/completions` for the `openai` backend)
+- if no URL is set for the `huggingface` backend, it will automatically use the default URL
+  - it will error for other backends as there is no sensible default URL
+- if you do set the **correct** path at the end of the URL it will not add it a second time as it checks if it is already present
+- there is an option to disable this behavior: `llm.disableUrlPathCompletion`
 
 ### Suggestion behavior
 
