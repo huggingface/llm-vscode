@@ -8,7 +8,7 @@ on:
 
 env:
   FETCH_DEPTH: 0 # pull in the tags for the version string
-  LLM_LS_VERSION: 0.5.2
+  LLM_LS_VERSION: 0.5.3
 
 jobs:
   package:
@@ -41,16 +41,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: ${{ env.FETCH_DEPTH }}
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
-      - uses: robinraju/release-downloader@v1.8
+      - uses: robinraju/release-downloader@v1.10
         with:
           repository: "huggingface/llm-ls"
           tag: ${{ env.LLM_LS_VERSION }}
@@ -71,7 +71,7 @@ jobs:
         run: npx vsce package -o "./llm-ls-${{ matrix.code-target }}.vsix" --target ${{ matrix.code-target }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: pkg-${{ matrix.target }}
           path: ./llm-ls-${{ matrix.code-target }}.vsix
@@ -82,14 +82,14 @@ jobs:
     needs: ["package"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: ${{ env.FETCH_DEPTH }}
 
       - name: Install Nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
       - run: echo "HEAD_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
       - run: 'echo "HEAD_SHA: $HEAD_SHA"'
@@ -98,37 +98,37 @@ jobs:
         env:
           BRANCH: ${{ github.ref_name }}
         id: split
-        run: echo "::set-output name=tag::${BRANCH##*/}"
+        run: echo "tag=${BRANCH##*/}" >> $GITHUB_OUTPUT
 
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-aarch64-apple-darwin
           path: pkg
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-x86_64-apple-darwin
           path: pkg
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-x86_64-unknown-linux-gnu
           path: pkg
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-x86_64-unknown-linux-musl
           path: pkg
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-aarch64-unknown-linux-gnu
           path: pkg
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-arm-unknown-linux-gnueabihf
           path: pkg
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: pkg-x86_64-pc-windows-msvc
           path: pkg
-      # - uses: actions/download-artifact@v1
+      # - uses: actions/download-artifact@v4
       #   with:
       #     name: pkg-aarch64-pc-windows-msvc
       #     path: pkg

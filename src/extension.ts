@@ -26,10 +26,10 @@ let ctx: vscode.ExtensionContext;
 let loadingIndicator: vscode.StatusBarItem;
 
 function createLoadingIndicator(): vscode.StatusBarItem {
-	let li = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10)
-	li.text = "$(loading~spin) LLM"
-	li.tooltip = "Generating completions..."
-	return li
+	let li = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
+	li.text = "$(loading~spin) LLM";
+	li.tooltip = "Generating completions...";
+	return li;
 }
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -48,6 +48,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (command.startsWith("~/")) {
 		command = homedir() + command.slice("~".length);
 	}
+
 	const serverOptions: ServerOptions = {
 		run: {
 			command, transport: TransportKind.stdio, options: {
@@ -81,7 +82,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		clientOptions
 	);
 
-	loadingIndicator = createLoadingIndicator()
+	loadingIndicator = createLoadingIndicator();
 
 	await client.start();
 
@@ -173,6 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				tlsSkipVerifyInsecure: config.get("tlsSkipVerifyInsecure") as boolean,
 				ide: "vscode",
 				tokenizerConfig,
+				disableUrlPathCompletion: config.get("disableUrlPathCompletion") as boolean,
 			};
 			try {
 				loadingIndicator.show()

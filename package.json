@@ -2,7 +2,7 @@
   "name": "huggingface-vscode",
   "displayName": "llm-vscode",
   "description": "LLM powered development for VS Code",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "HuggingFace",
   "icon": "small_logo.png",
   "engines": {
@@ -219,6 +219,11 @@
               "pattern": "**"
             },
             "description": "Filter documents to enable suggestions for"
+          },
+          "llm.disableUrlPathCompletion": {
+            "type": "boolean",
+            "default": false,
+            "description": "When setting `llm.url`, llm-ls will try to append the correct path to your URL if it doesn't end with such a path, e.g. for an OpenAI backend if it doesn't end with `/v1/completions`. Set this to `true` to disable this behavior."
           }
         }
       }
