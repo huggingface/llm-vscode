@@ -2,7 +2,7 @@
   "name": "huggingface-vscode",
   "displayName": "llm-vscode",
   "description": "LLM powered development for VS Code",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "HuggingFace",
   "icon": "small_logo.png",
   "engines": {
@@ -85,7 +85,7 @@
           "llm.configTemplate": {
             "type": "string",
             "enum": [
-              "hf/bigcode/starcoder",
+              "hf/bigcode/starcoder2-15b",
               "hf/codellama/CodeLlama-13b-hf",
               "hf/Phind/Phind-CodeLlama-34B-v2",
               "hf/WizardLM/WizardCoder-Python-34B-V1.0",
@@ -93,7 +93,7 @@
               "ollama/codellama:7b",
               "Custom"
             ],
-            "default": "hf/bigcode/starcoder",
+            "default": "hf/bigcode/starcoder2-15b",
             "description": "Choose your model template from the dropdown"
           },
           "llm.modelId": {

@@ -1,4 +1,4 @@
-const templateKeys = ["hf/bigcode/starcoder", "hf/codellama/CodeLlama-13b-hf", "hf/Phind/Phind-CodeLlama-34B-v2", "hf/WizardLM/WizardCoder-Python-34B-V1.0", "ollama/codellama:7b", "hf/deepseek-ai/deepseek-coder-6.7b-base", "Custom"] as const;
+const templateKeys = ["hf/bigcode/starcoder2-15b", "hf/codellama/CodeLlama-13b-hf", "hf/Phind/Phind-CodeLlama-34B-v2", "hf/WizardLM/WizardCoder-Python-34B-V1.0", "ollama/codellama:7b", "hf/deepseek-ai/deepseek-coder-6.7b-base", "Custom"] as const;
 export type TemplateKey = typeof templateKeys[number];
 
 export interface TokenizerPathConfig {
@@ -28,8 +28,8 @@ export interface Config {
 	tokenizer: TokenizerPathConfig | TokenizerRepoConfig | TokenizerUrlConfig | null;
 }
 
-const HfStarCoderConfig: Config = {
-	modelId: "bigcode/starcoder",
+const HfStarCoder215BConfig: Config = {
+	modelId: "bigcode/starcoder2-15b",
 	backend: "huggingface",
 	url: null,
 	"fillInTheMiddle.enabled": true,
@@ -43,10 +43,10 @@ const HfStarCoderConfig: Config = {
 			top_p: 0.95
 		}
 	},
-	contextWindow: 8192,
+	contextWindow: 1024,
 	tokensToClear: ["<|endoftext|>"],
 	tokenizer: {
-		repository: "bigcode/starcoder",
+		repository: "bigcode/starcoder2-15b",
 	}
 }
 
@@ -65,7 +65,7 @@ const HfCodeLlama13BConfig: Config = {
 			top_p: 0.95
 		}
 	},
-	contextWindow: 4096,
+	contextWindow: 1024,
 	tokensToClear: ["<EOT>"],
 	tokenizer: {
 		repository: "codellama/CodeLlama-13b-hf",
@@ -84,7 +84,7 @@ const HfDeepSeekConfig: Config = {
 	"fillInTheMiddle.middle": "<｜fim▁end｜>",
 	// DeepSeek should support 16k, 
 	// keeping at 8k because of resource constraints
-	contextWindow: 8192,
+	contextWindow: 1024,
 	tokensToClear: ["<|EOT|>"],
 	tokenizer: {
 		repository: "deepseek-ai/deepseek-coder-6.7b-base",
@@ -123,14 +123,15 @@ const OllamaCodeLlama7BConfig: Config = {
 			top_p: 0.95
 		}
 	},
-	contextWindow: 2048,
+	contextWindow: 1024,
 	tokenizer: {
 		repository: "codellama/CodeLlama-7b-hf",
 	}
 }
 
+
 export const templates: Partial<Record<TemplateKey, Config>> = {
-	"hf/bigcode/starcoder": HfStarCoderConfig,
+	"hf/bigcode/starcoder2-15b": HfStarCoder215BConfig,
 	"hf/codellama/CodeLlama-13b-hf": HfCodeLlama13BConfig,
 	"hf/Phind/Phind-CodeLlama-34B-v2": HfPhindCodeLlama34Bv2Config,
 	"hf/WizardLM/WizardCoder-Python-34B-V1.0": HfWizardCoderPython34Bv1Config,
