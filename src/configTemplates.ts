@@ -1,4 +1,4 @@
-const templateKeys = ["hf/bigcode/starcoder", "hf/codellama/CodeLlama-13b-hf", "hf/Phind/Phind-CodeLlama-34B-v2", "hf/WizardLM/WizardCoder-Python-34B-V1.0", "ollama/codellama:7b", "hf/deepseek-ai/deepseek-coder-6.7b-base", "Custom"] as const;
+const templateKeys = ["hf/bigcode/starcoder", "hf/codellama/CodeLlama-13b-hf", "hf/Phind/Phind-CodeLlama-34B-v2", "hf/WizardLM/WizardCoder-Python-34B-V1.0", "ollama/codellama:7b", "hf/deepseek-ai/deepseek-coder-6.7b-base", "hf/google/codegemma-2b", "Custom"] as const;
 export type TemplateKey = typeof templateKeys[number];
 
 export interface TokenizerPathConfig {
@@ -49,6 +49,27 @@ const HfStarCoderConfig: Config = {
 		repository: "bigcode/starcoder",
 	}
 }
+const HfCodeGemmaConfig: Config = {
+	modelId: "google/codegemma-2b",
+	backend: "huggingface",
+	url: null,
+	"fillInTheMiddle.enabled": true,
+	"fillInTheMiddle.prefix": "<|fim_prefix|>",
+	"fillInTheMiddle.suffix": "<|fim_suffix|>",
+	"fillInTheMiddle.middle": "<|fim_middle|>",
+	contextWindow: 8192,
+	tokensToClear: ["<|file_separator|>"],
+	tokenizer: {
+		repository: "google/codegemma-2b",
+	},
+	requestBody: {
+		parameters: {
+			max_new_tokens: 128,
+			temperature: 0.1,
+			top_p: 0.95
+		}
+	}
+}
 
 const HfCodeLlama13BConfig: Config = {
 	modelId: "codellama/CodeLlama-13b-hf",
@@ -78,11 +99,11 @@ const HfDeepSeekConfig: Config = {
 	url: null,
 	"fillInTheMiddle.enabled": true,
 	"fillInTheMiddle.prefix": "<｜fim▁begin｜>",
-	// DeepSeek names the suffix token fim_hole, 
+	// DeepSeek names the suffix token fim_hole,
 	// as it indicates the position to fill in
 	"fillInTheMiddle.suffix": "<｜fim▁hole｜>",
 	"fillInTheMiddle.middle": "<｜fim▁end｜>",
-	// DeepSeek should support 16k, 
+	// DeepSeek should support 16k,
 	// keeping at 8k because of resource constraints
 	contextWindow: 8192,
 	tokensToClear: ["<|EOT|>"],
@@ -131,9 +152,10 @@ const OllamaCodeLlama7BConfig: Config = {
 
 export const templates: Partial<Record<TemplateKey, Config>> = {
 	"hf/bigcode/starcoder": HfStarCoderConfig,
+	"hf/google/codegemma-2b": HfCodeGemmaConfig,
 	"hf/codellama/CodeLlama-13b-hf": HfCodeLlama13BConfig,
 	"hf/Phind/Phind-CodeLlama-34B-v2": HfPhindCodeLlama34Bv2Config,
 	"hf/WizardLM/WizardCoder-Python-34B-V1.0": HfWizardCoderPython34Bv1Config,
-    "hf/deepseek-ai/deepseek-coder-6.7b-base": HfDeepSeekConfig,
+	"hf/deepseek-ai/deepseek-coder-6.7b-base": HfDeepSeekConfig,
 	"ollama/codellama:7b": OllamaCodeLlama7BConfig,
 }
