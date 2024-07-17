@@ -230,7 +230,7 @@
     ],
     "keybindings": [
       {
-        "key": "cmd+shift+l",
+        "key": "alt+shift+l",
         "command": "editor.action.inlineSuggest.trigger"
       },
       {
