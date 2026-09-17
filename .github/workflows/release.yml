@@ -54,7 +54,7 @@ jobs:
         with:
           node-version: 20
 
-      - uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1
+      - uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1.13
         with:
           repository: "huggingface/llm-ls"
           tag: ${{ env.LLM_LS_VERSION }}
